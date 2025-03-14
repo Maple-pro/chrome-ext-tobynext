@@ -1,24 +1,12 @@
-# Chrome Extension Starter Kit 🚀
+# TobyNext
 
-Get started with building your dream Chrome extension effortlessly! Our starter kit combines the power of cutting-edge technologies like Vite, TypeScript, React, CRX, Tailwind CSS, and DaisyUI, making extension development a breeze.
+一个将浏览器书签展示到浏览器主页的插件。
 
-Why choose this template? 🤔 Well, there are countless templates out there, but if you're eyeing Tailwind for your Chrome extension, you're in luck! 🎉 With this template, diving into extension development becomes a breeze – no configuration needed! 💻
+- 存储：Chrome 自带 bookmarks
+- 用途：
+  - 在主页以仿 toby 的方式展示 bookmarks
+  - 拖拽的方式将当前网页加入到指定 bookmarks
 
-## Key Features
-- 🛠️ **Vite**: for lightning-fast development and hot module replacement.
-- 🧰 **TypeScript**: for type safety and enhanced productivity.
-- ⚛️ **React**: for building dynamic and interactive UI components.
-- 📦 **CRX**: for easy packaging and distribution of your extension.
-- 🎨 **Tailwind CSS**: for hassle-free styling, including seamless integration in content scripts.
-- 🌼 **DaisyUI**: for beautiful and customizable UI elements right out of the box.
+![](https://maples31-blog.oss-cn-beijing.aliyuncs.com/img/image-20241121-7f730a-20241121123337.png)
 
-## Why Choose Our Starter Kit?
-- 🚀 **Streamlined Setup**: Say goodbye to configuration headaches. Get up and running in minutes.
-- ⚡ **Optimized Performance**: Leverage Vite's speed and Tailwind CSS's efficiency for blazing-fast development.
-- 👩‍💻 **Developer-Friendly**: TypeScript support and React components empower developers to build feature-rich extensions with ease.
-
-## Usage Instructions
-1. 📥 Clone the repository.
-2. 🔧 Install dependencies with `pnpm install`.
-3. 🚀 Start development server with `pnpm dev`.
-4. 🏗️ Build your extension for production with `pnpm build`.
+workspace1 -> space1 -> collection1 -> item1

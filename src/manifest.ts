@@ -43,8 +43,11 @@ export default defineManifest({
   ],
   web_accessible_resources: [
     {
-      resources: ['icon16.png', 'icon32.png', 'icon48.png', 'icon128.png'],
-      matches: [],
+      resources: ['icon16.png', 'icon32.png', 'icon48.png', 'icon128.png', 'assets/*'],
+      matches: ['<all_urls>'],
     },
   ],
+  chrome_url_overrides: {
+    newtab: 'src/newtab.html'
+  },
 });
