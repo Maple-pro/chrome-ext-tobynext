@@ -48,6 +48,6 @@ export default defineManifest({
     },
   ],
   chrome_url_overrides: {
-    newtab: 'src/newtab.html'
+    newtab: 'src/newtab/index.html'
   },
 });

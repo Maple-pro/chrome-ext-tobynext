@@ -15,7 +15,9 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@*": ["src/*"]
+      "@/*": ["./src/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@assets/*": ["./src/assets/*"]
     },
 
     /* Linting */
@@ -28,5 +30,5 @@
   "include": ["*/**.ts", "*/**.tsx", "vite.config.ts"],
   "exclude": ["/node_modules", "/dist"],
   "references": [{ "path": "./tsconfig.node.json" }],
-  "types": ["chrome", "node"]
+  "types": ["chrome", "node"],
 }
