@@ -28,7 +28,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["*/**.ts", "*/**.tsx", "vite.config.ts", "*.json"],
+  "include": ["*/**.ts", "*/**.tsx", "vite.config.ts", "*.json", "./src"],
   "exclude": ["/node_modules", "/dist"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "types": ["chrome", "node"],
