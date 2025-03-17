@@ -82,3 +82,7 @@
   font-family: 'Inter', sans-serif !important;
   letter-spacing: normal;
 }
+
+@theme {
+  --spacing: 1px;
+}
