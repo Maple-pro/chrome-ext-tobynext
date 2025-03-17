@@ -5,6 +5,7 @@ import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig, Plugin } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from '@tailwindcss/vite';
 
 import manifest from './src/manifest';
 
@@ -32,6 +33,7 @@ export default defineConfig({
         injectCss: true,
       },
     }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {

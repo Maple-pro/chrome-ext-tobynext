@@ -1,8 +1,5 @@
 import postcssRemToPx from '@thedutchcoder/postcss-rem-to-px';
-import autoprefixer from 'autoprefixer';
 import postcssPrefixSelector from 'postcss-prefix-selector';
-
-import tailwindcss from 'tailwindcss';
 
 /**
  * Transforms a CSS selector based on a given prefix.
@@ -32,9 +29,6 @@ function transformSelector(prefix, selector, prefixedSelector) {
  */
 const postcssConfig = {
   plugins: [
-    // Apply Tailwind CSS
-    tailwindcss(),
-
     // Add a prefix to all selectors
     postcssPrefixSelector({
       prefix: '#my-ext',
@@ -43,9 +37,6 @@ const postcssConfig = {
 
     // Convert rem units to px
     postcssRemToPx(),
-
-    // Add vendor prefixes
-    autoprefixer(),
   ],
 };
 

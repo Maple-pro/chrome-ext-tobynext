@@ -14,6 +14,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -47,9 +48,9 @@
     "postcss-prefix-selector": "^1.16.0",
     "prettier": "^3.2.5",
     "prettier-plugin-css-order": "^2.1.2",
-    "prettier-plugin-tailwindcss": "^0.5.13",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^4.0.14",
+    "typescript": "^5.8.2",
     "vite": "^5.2.7",
     "vite-tsconfig-paths": "^4.3.2"
   },

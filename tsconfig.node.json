@@ -12,5 +12,7 @@
       "@utils/*": ["./src/utils/*"],
       "@assets/*": ["./src/assets/*"]
     },
-  }
+    "outDir": "build",
+  },
+  "include": ["*/**.ts", "*/**.tsx", "vite.config.ts", "*.json"],
 }

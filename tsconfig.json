@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "outDir": "build",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -27,7 +28,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["*/**.ts", "*/**.tsx", "vite.config.ts"],
+  "include": ["*/**.ts", "*/**.tsx", "vite.config.ts", "*.json"],
   "exclude": ["/node_modules", "/dist"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "types": ["chrome", "node"],
