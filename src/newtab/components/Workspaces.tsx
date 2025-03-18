@@ -7,43 +7,43 @@ interface WorkspacesProps {
 }
 
 
+const workspaceColors = [
+    "bg-red-300", "bg-orange-300", "bg-amber-300", "bg-yellow-300", "bg-lime-300",
+    "bg-green-300", "bg-emerald-300", "bg-teal-300", "bg-cyan-300", "bg-sky-300",
+]
+
 const Workspaces = (props: WorkspacesProps): JSX.Element => {
     const [workspaces, setWorkspaces] = useState<BookmarkTreeNode[]>([]);
     const rootFolder = props.folder;
+
     useEffect(() => {
-        if (!rootFolder || !rootFolder.children) {
+        if (!rootFolder || rootFolder.url) {
             console.error('Cannot find TobyNext root folder');
-            console.log(rootFolder);
-            console.log(rootFolder.children);
             return;
         }
-        
-        console.log("1");
 
-        for (const workspaceFolder of rootFolder.children) {
-            if (!workspaceFolder.url) {
-                console.log("find workspace: " + workspaceFolder.title);
-                setWorkspaces([...workspaces, workspaceFolder]);
-            }
-        }
-        console.log("2");
-
-        if (workspaces.length == 0) {
-            chrome.bookmarks.create(
-                {"parentId": rootFolder.id, "title": "Workspace1"},
-                function(newFolder) {
-                    console.log("Create a workspace folder: " + newFolder.title);
+        const fetchWorkspaces = async () => {
+            const children = await new Promise<BookmarkTreeNode[]>((resolve) => {
+                chrome.bookmarks.getChildren(rootFolder.id, resolve);
+            });
+            for (const child of children) {
+                if (!child.url) {
+                    console.log("find workspace: " + child.title);
+                    setWorkspaces(prevWorkspaces => [...prevWorkspaces, child]);
                 }
-            )
-        }
-        console.log("3");
+            }
+        };
+
+        fetchWorkspaces();
     }, []);
 
     return (
-        <div id="workspaces" className="flex flex-col justify-center px-5">
-            {workspaces.map(workspace => (
-                <div id="workspace" className="mb-10 w-40 h-40 bg-green-50">
-                    {workspace.title}
+        <div id="workspaces" className="flex flex-col justify-center items-center px-5">
+            {workspaces.map((workspace, index) => (
+                <div id={"workspace-" + workspace.title} className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl ${workspaceColors[index % workspaceColors.length]}`}>
+                    <div id="workspace-name" className="truncate text-center text-[#FAFAFA] leading-[1.2]">
+                        {workspace.title}
+                    </div>
                 </div>
             ))}
         </div>
