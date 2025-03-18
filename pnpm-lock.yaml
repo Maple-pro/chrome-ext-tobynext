@@ -11,57 +11,60 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.14
         version: 4.0.14(vite@5.4.14(@types/node@20.17.24)(lightningcss@1.29.2))
+      '@types/chrome':
+        specifier: ^0.0.309
+        version: 0.0.309
+      chrome-types:
+        specifier: ^0.1.345
+        version: 0.1.345
       react:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@commitlint/cli':
-        specifier: ^19.2.1
+        specifier: ^19.8.0
         version: 19.8.0(@types/node@20.17.24)(typescript@5.8.2)
       '@commitlint/config-conventional':
-        specifier: ^19.1.0
+        specifier: ^19.8.0
         version: 19.8.0
       '@crxjs/vite-plugin':
         specifier: ^1.0.14
         version: 1.0.14(vite@5.4.14(@types/node@20.17.24)(lightningcss@1.29.2))
       '@ianvs/prettier-plugin-sort-imports':
-        specifier: ^4.2.1
+        specifier: ^4.4.1
         version: 4.4.1(prettier@3.5.3)
       '@thedutchcoder/postcss-rem-to-px':
         specifier: ^0.0.2
         version: 0.0.2(postcss@8.5.3)
-      '@types/chrome':
-        specifier: ^0.0.268
-        version: 0.0.268
       '@types/node':
-        specifier: ^20.12.2
+        specifier: ^20.17.24
         version: 20.17.24
       '@types/react':
-        specifier: ^18.2.73
+        specifier: ^18.3.18
         version: 18.3.18
       '@types/react-dom':
-        specifier: ^18.2.23
+        specifier: ^18.3.5
         version: 18.3.5(@types/react@18.3.18)
       '@typescript-eslint/eslint-plugin':
-        specifier: ^7.4.0
+        specifier: ^7.18.0
         version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2)
       '@typescript-eslint/parser':
-        specifier: ^7.4.0
+        specifier: ^7.18.0
         version: 7.18.0(eslint@8.57.1)(typescript@5.8.2)
       '@vitejs/plugin-react-swc':
-        specifier: ^3.6.0
+        specifier: ^3.8.0
         version: 3.8.0(vite@5.4.14(@types/node@20.17.24)(lightningcss@1.29.2))
       autoprefixer:
-        specifier: ^10.4.19
+        specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.3)
       daisyui:
-        specifier: ^4.9.0
+        specifier: ^4.12.24
         version: 4.12.24(postcss@8.5.3)
       eslint:
-        specifier: ^8.57.0
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-config-airbnb:
         specifier: ^19.0.4
@@ -70,37 +73,37 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.1)
       eslint-import-resolver-typescript:
-        specifier: ^3.6.1
+        specifier: ^3.9.1
         version: 3.9.1(eslint-plugin-import@2.31.0)(eslint@8.57.1)
       eslint-plugin-import:
-        specifier: ^2.29.1
+        specifier: ^2.31.0
         version: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint-import-resolver-typescript@3.9.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y:
-        specifier: ^6.8.0
+        specifier: ^6.10.2
         version: 6.10.2(eslint@8.57.1)
       eslint-plugin-react:
-        specifier: ^7.34.1
+        specifier: ^7.37.4
         version: 7.37.4(eslint@8.57.1)
       eslint-plugin-react-hooks:
-        specifier: ^4.6.0
+        specifier: ^4.6.2
         version: 4.6.2(eslint@8.57.1)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.6
+        specifier: ^0.4.19
         version: 0.4.19(eslint@8.57.1)
       husky:
-        specifier: ^9.0.11
+        specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^15.2.2
+        specifier: ^15.5.0
         version: 15.5.0
       postcss:
-        specifier: ^8.4.38
+        specifier: ^8.5.3
         version: 8.5.3
       postcss-prefix-selector:
-        specifier: ^1.16.0
+        specifier: ^1.16.1
         version: 1.16.1(postcss@8.5.3)
       prettier:
-        specifier: ^3.2.5
+        specifier: ^3.5.3
         version: 3.5.3
       prettier-plugin-css-order:
         specifier: ^2.1.2
@@ -115,7 +118,7 @@ importers:
         specifier: ^5.8.2
         version: 5.8.2
       vite:
-        specifier: ^5.2.7
+        specifier: ^5.4.14
         version: 5.4.14(@types/node@20.17.24)(lightningcss@1.29.2)
       vite-tsconfig-paths:
         specifier: ^4.3.2
@@ -781,8 +784,8 @@ packages:
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
 
-  '@types/chrome@0.0.268':
-    resolution: {integrity: sha512-7N1QH9buudSJ7sI8Pe4mBHJr5oZ48s0hcanI9w3wgijAlv1OZNUZve9JR4x42dn5lJ5Sm87V1JNfnoh10EnQlA==}
+  '@types/chrome@0.0.309':
+    resolution: {integrity: sha512-ZFADzcp8b+roUrux68U8pti4cmNOLJXWkShk8lfxj9SBcjYqpJt7NypBprSJUJDJVakGZgd2Tt00QePIGh7oPA==}
 
   '@types/conventional-commits-parser@5.0.1':
     resolution: {integrity: sha512-7uz5EHdzz2TqoMfV7ee61Egf5y6NkcO4FB/1iCCQnbeiI1F3xzv3vK5dBCXUCLQgGYS+mUeigK1iKQzvED+QnQ==}
@@ -1120,6 +1123,9 @@ packages:
   cheerio@1.0.0:
     resolution: {integrity: sha512-quS9HgjQpdaXOvsZz82Oz7uxtXiy6UIsIQcpBj7HRw2M63Skasm9qlDocAM7jNuaxdhpPU7c4kJN+gA5MCu4ww==}
     engines: {node: '>=18.17'}
+
+  chrome-types@0.1.345:
+    resolution: {integrity: sha512-yvrWj6lKVTIrWxinIZxIiT/dM/KeDZJANO2JQ4wWHwB8xNt5I0M4nDVEXX4+fNmGAuXqqZQRZH2ZJPEwmA3F1Q==}
 
   cli-cursor@5.0.0:
     resolution: {integrity: sha512-aCj4O5wKyszjMmDT4tZj93kxyydN/K5zPWSCe6/0AV/AA1pqe5ZBIw0a2ZfPQV7lL5/yb5HsUreJ6UFAF1tEQw==}
@@ -3535,7 +3541,7 @@ snapshots:
       '@babel/types': 7.26.10
     optional: true
 
-  '@types/chrome@0.0.268':
+  '@types/chrome@0.0.309':
     dependencies:
       '@types/filesystem': 0.0.36
       '@types/har-format': 1.2.16
@@ -3924,6 +3930,8 @@ snapshots:
       parse5-parser-stream: 7.1.2
       undici: 6.21.2
       whatwg-mimetype: 4.0.0
+
+  chrome-types@0.1.345: {}
 
   cli-cursor@5.0.0:
     dependencies:
