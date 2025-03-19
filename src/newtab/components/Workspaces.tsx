@@ -3,7 +3,8 @@ import React, { useEffect, useState, JSX } from "react";
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WorkspacesProps {
-    folder: BookmarkTreeNode;
+    folder: BookmarkTreeNode,
+    getDefaultWorkspace: Function,
 }
 
 
@@ -26,6 +27,7 @@ const Workspaces = (props: WorkspacesProps): JSX.Element => {
             const children = await new Promise<BookmarkTreeNode[]>((resolve) => {
                 chrome.bookmarks.getChildren(rootFolder.id, resolve);
             });
+
             for (const child of children) {
                 if (!child.url) {
                     console.log("find workspace: " + child.title);
@@ -36,6 +38,12 @@ const Workspaces = (props: WorkspacesProps): JSX.Element => {
 
         fetchWorkspaces();
     }, []);
+
+    useEffect(() => {
+        if (workspaces.length != 0) {
+            props.getDefaultWorkspace(workspaces[0]);
+        }
+    }, [workspaces]);
 
     return (
         <div id="workspaces" className="flex flex-col justify-center items-center px-5">
