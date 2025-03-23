@@ -8,13 +8,15 @@ import Spaces from "./components/Spaces";
 import SpaceName from "./components/SpaceName";
 import fetchSubFolder from "./utils/fetchSubFolder";
 import Collections from "./components/Collections";
+import TabName from "./components/TabName";
 
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 export default function NewTab(): JSX.Element {
-    const workspaceAddComponent = <WorkspaceAdd />
-    const searchComponent = <Search />
+    const workspaceAddComponent = <WorkspaceAdd />;
+    const searchComponent = <Search />;
+    const tabNameComponent = <TabName />;
 
     let [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
     let [workspacesComponent, setWorkspacesComponent] = useState<JSX.Element>();
@@ -102,7 +104,9 @@ export default function NewTab(): JSX.Element {
                     {spaceNameComponent}
                     {collectionsComponent}
                 </div>
-                <div id="tab-container" className="h-full flex-none basis-220" />
+                <div id="tab-container" className="h-full flex-none basis-220">
+                    {tabNameComponent}
+                </div>
             </div>
         </div>
     );
