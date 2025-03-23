@@ -5,6 +5,9 @@ import WorkspaceAdd from "./components/WorkspaceAdd";
 import WorkspaceName from "./components/WorkspaceName";
 import Search from "./components/Search";
 import Spaces from "./components/Spaces";
+import SpaceName from "./components/SpaceName";
+import fetchSubFolder from "./utils/fetchSubFolder";
+import Collections from "./components/Collections";
 
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
@@ -19,6 +22,9 @@ export default function NewTab(): JSX.Element {
     let [workspaceNameComponent, setWorkspaceNameComponent] = useState<JSX.Element>();
     let [spacesComponent, setSpacesComponent] = useState<JSX.Element>();
     let [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
+    let [spaceNameComponent, setSpaceNameComponent] = useState<JSX.Element>();
+    let [collections, setCollections] = useState<BookmarkTreeNode[]>();
+    let [collectionsComponent, setCollectionsComponent] = useState<JSX.Element>();
 
     const getCurrentWorkspace = (defaultWorkspace: BookmarkTreeNode) => {
         setCurrentWorkspace(defaultWorkspace);
@@ -60,6 +66,24 @@ export default function NewTab(): JSX.Element {
         }
     }, [currentSpace]);
 
+    useEffect(() => {
+        if (currentSpace) {
+            fetchSubFolder(currentSpace, setCollections);
+        }
+    }, [currentSpace]);
+
+    useEffect(() => {
+        const spaceName = currentSpace ? currentSpace.title : "";
+        const collectionNum = collections ? collections.length : 0;
+        setSpaceNameComponent(<SpaceName spaceName={spaceName} collectionsNum={collectionNum} />);
+    }, [currentSpace, collections]);
+
+    useEffect(() => {
+        if (currentSpace) {
+            setCollectionsComponent(<Collections space={currentSpace} />);
+        }
+    }, [currentSpace]);
+
     return (
         <div id="my-ext" data-theme="light">
             <div id="main-container" className="h-screen w-screen flex bg-[#FAFAFA]">
@@ -68,18 +92,17 @@ export default function NewTab(): JSX.Element {
                         {workspacesComponent}
                         {workspaceAddComponent}
                     </div>
-                    <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-#DDDDF5 flex flex-col">
+                    <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-[#DDDDF5] flex flex-col">
                         {workspaceNameComponent}
                         {searchComponent}
                         {spacesComponent}
                     </div>
                 </div>
-                <div id="data-panel-group" className="h-full w-10 flex-auto flex">
-                    <div id="collection-container" className="h-full grow-85 shrink border-r-1 border-solid border-#DDDDF5" />
-                    <div id="tab-container" className="h-full grow-15 shrink" />
-
+                <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-[#DDDDF5] flex flex-col max-w-[calc(100vw-510px)]">
+                    {spaceNameComponent}
+                    {collectionsComponent}
                 </div>
-
+                <div id="tab-container" className="h-full flex-none basis-220" />
             </div>
         </div>
     );

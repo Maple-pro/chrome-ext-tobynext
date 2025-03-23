@@ -36,9 +36,6 @@ importers:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.4.1
         version: 4.4.1(prettier@3.5.3)
-      '@thedutchcoder/postcss-rem-to-px':
-        specifier: ^0.0.2
-        version: 0.0.2(postcss@8.5.3)
       '@types/node':
         specifier: ^20.17.24
         version: 20.17.24
@@ -96,12 +93,6 @@ importers:
       lint-staged:
         specifier: ^15.5.0
         version: 15.5.0
-      postcss:
-        specifier: ^8.5.3
-        version: 8.5.3
-      postcss-prefix-selector:
-        specifier: ^1.16.1
-        version: 1.16.1(postcss@8.5.3)
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -762,12 +753,6 @@ packages:
     resolution: {integrity: sha512-y69ztPTRFy+13EPS/7dEFVl7q2Goh1pQueVO8IfGeyqSpcx/joNJXFk0lLhMgUbF0VFJotwRSb9ZY7Xoq3r26Q==}
     peerDependencies:
       vite: ^5.2.0 || ^6
-
-  '@thedutchcoder/postcss-rem-to-px@0.0.2':
-    resolution: {integrity: sha512-M2T3bJSTgLtZF8+KDYDtSDAFGuTlaxYfitpjkmNswnfJ8AjbQ/g7NC+bqgAAViYWFV9I3tdrQuQ3Bu8j7GrjwA==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      postcss: ^8.3.0
 
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
@@ -2325,11 +2310,6 @@ packages:
     peerDependencies:
       postcss: ^8.3.5
 
-  postcss-prefix-selector@1.16.1:
-    resolution: {integrity: sha512-Umxu+FvKMwlY6TyDzGFoSUnzW+NOfMBLyC1tAkIjgX+Z/qGspJeRjVC903D7mx7TuBpJlwti2ibXtWuA7fKMeQ==}
-    peerDependencies:
-      postcss: '>4 <9'
-
   postcss-scss@4.0.9:
     resolution: {integrity: sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==}
     engines: {node: '>=12.0'}
@@ -3506,10 +3486,6 @@ snapshots:
       lightningcss: 1.29.2
       tailwindcss: 4.0.14
       vite: 5.4.14(@types/node@20.17.24)(lightningcss@1.29.2)
-
-  '@thedutchcoder/postcss-rem-to-px@0.0.2(postcss@8.5.3)':
-    dependencies:
-      postcss: 8.5.3
 
   '@tybys/wasm-util@0.9.0':
     dependencies:
@@ -5261,10 +5237,6 @@ snapshots:
       postcss: 8.5.3
 
   postcss-less@6.0.0(postcss@8.5.3):
-    dependencies:
-      postcss: 8.5.3
-
-  postcss-prefix-selector@1.16.1(postcss@8.5.3):
     dependencies:
       postcss: 8.5.3
 
