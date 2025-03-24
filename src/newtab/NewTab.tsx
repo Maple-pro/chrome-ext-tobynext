@@ -9,6 +9,7 @@ import SpaceName from "./components/SpaceName";
 import fetchSubFolder from "./utils/fetchSubFolder";
 import Collections from "./components/Collections";
 import TabName from "./components/TabName";
+import Windows from "./components/Windows";
 
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
@@ -17,16 +18,17 @@ export default function NewTab(): JSX.Element {
     const workspaceAddComponent = <WorkspaceAdd />;
     const searchComponent = <Search />;
     const tabNameComponent = <TabName />;
+    const windowsComponent = <Windows />;
 
-    let [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
-    let [workspacesComponent, setWorkspacesComponent] = useState<JSX.Element>();
-    let [currentWorkspace, setCurrentWorkspace] = useState<BookmarkTreeNode | undefined>();
-    let [workspaceNameComponent, setWorkspaceNameComponent] = useState<JSX.Element>();
-    let [spacesComponent, setSpacesComponent] = useState<JSX.Element>();
-    let [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
-    let [spaceNameComponent, setSpaceNameComponent] = useState<JSX.Element>();
-    let [collections, setCollections] = useState<BookmarkTreeNode[]>();
-    let [collectionsComponent, setCollectionsComponent] = useState<JSX.Element>();
+    const [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
+    const [workspacesComponent, setWorkspacesComponent] = useState<JSX.Element>();
+    const [currentWorkspace, setCurrentWorkspace] = useState<BookmarkTreeNode | undefined>();
+    const [workspaceNameComponent, setWorkspaceNameComponent] = useState<JSX.Element>();
+    const [spacesComponent, setSpacesComponent] = useState<JSX.Element>();
+    const [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
+    const [spaceNameComponent, setSpaceNameComponent] = useState<JSX.Element>();
+    const [collections, setCollections] = useState<BookmarkTreeNode[]>();
+    const [collectionsComponent, setCollectionsComponent] = useState<JSX.Element>();
 
     const getCurrentWorkspace = (defaultWorkspace: BookmarkTreeNode) => {
         setCurrentWorkspace(defaultWorkspace);
@@ -104,8 +106,9 @@ export default function NewTab(): JSX.Element {
                     {spaceNameComponent}
                     {collectionsComponent}
                 </div>
-                <div id="tab-container" className="h-full flex-none basis-220">
+                <div id="tab-container" className="h-full flex-none basis-220 max-w-220 flex flex-col">
                     {tabNameComponent}
+                    {windowsComponent}
                 </div>
             </div>
         </div>
