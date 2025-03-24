@@ -12,7 +12,7 @@ const SpaceName = (props: SpaceNameProps): JSX.Element => {
                 <div id="space-name" className="text-[18px]">
                     {props.spaceName}
                 </div>
-                <div id="collection-number" className="ml-20 text-[12px] text-[#70708C]">
+                <div id="collection-number" className={`ml-20 text-[12px] text-[#70708C] ${props.spaceName === "" ? "invisible" : "visible"}`}>
                     | {props.collectionsNum} collections
                 </div>
             </div>

@@ -67,12 +67,16 @@ export default function NewTab(): JSX.Element {
     useEffect(() => {
         if (currentSpace) {
             console.log("Current space: " + currentSpace.title);
+        } else {
+            console.log("No current space");
         }
     }, [currentSpace]);
 
     useEffect(() => {
         if (currentSpace) {
             fetchSubFolder(currentSpace, setCollections);
+        } else {
+            setCollections([]);
         }
     }, [currentSpace]);
 
@@ -83,9 +87,7 @@ export default function NewTab(): JSX.Element {
     }, [currentSpace, collections]);
 
     useEffect(() => {
-        if (currentSpace) {
-            setCollectionsComponent(<Collections space={currentSpace} />);
-        }
+        setCollectionsComponent(<Collections space={currentSpace} />);
     }, [currentSpace]);
 
     return (

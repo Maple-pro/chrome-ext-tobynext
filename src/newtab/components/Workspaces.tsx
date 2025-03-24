@@ -36,19 +36,24 @@ const Workspaces = (props: WorkspacesProps): JSX.Element => {
     }, [workspaces]);
 
     useEffect(() => {
-        props.getCurrentWorkspace(workspaces[0]);
+        if (!currentWorkspace) {
+            props.getCurrentWorkspace(workspaces[0]);
+        } else {
+            props.getCurrentWorkspace(currentWorkspace);
+        }
     }, [currentWorkspace]);
 
     return (
         <div id="workspaces" className="flex flex-col justify-center items-center px-5">
-            {workspaces.map((workspace, index) => currentWorkspace && currentWorkspace.id === workspace.id ? (
-                <div id={"workspace-" + workspace.title} className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl ${workspaceColors[index % workspaceColors.length]} outline-2 outline-offset-2 outline-solid ${outlineColors[index % outlineColors.length]}`}>
-                    <div id="workspace-name" className="truncate text-center text-[#FAFAFA] leading-[1.2]">
-                        {workspace.title}
-                    </div>
-                </div>
-            ) : (
-                <div id={"workspace-" + workspace.title} className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl ${workspaceColors[index % workspaceColors.length]}`}>
+            {workspaces.map((workspace, index) => (
+                <div
+                    id={"workspace-" + workspace.title}
+                    onClick={() => setCurrentWorkspace(workspace)}
+                    className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl cursor-pointer
+                        ${workspaceColors[index % workspaceColors.length]} 
+                        ${currentWorkspace && currentWorkspace.id === workspace.id ? `outline-2 outline-offset-2 outline-solid ${outlineColors[index % outlineColors.length]}` : ''}`
+                    }
+                >
                     <div id="workspace-name" className="truncate text-center text-[#FAFAFA] leading-[1.2]">
                         {workspace.title}
                     </div>

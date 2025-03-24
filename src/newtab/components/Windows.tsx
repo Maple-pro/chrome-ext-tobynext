@@ -9,6 +9,20 @@ const Windows = (): JSX.Element => {
 
     useEffect(() => {
         fetchAllWindows(setWindows);
+
+        const handleTabChange = () => {
+            fetchAllWindows(setWindows);
+        };
+
+        chrome.tabs.onUpdated.addListener(handleTabChange);
+        chrome.tabs.onRemoved.addListener(handleTabChange);
+        chrome.tabs.onCreated.addListener(handleTabChange);
+
+        return () => {
+            chrome.tabs.onUpdated.removeListener(handleTabChange);
+            chrome.tabs.onRemoved.removeListener(handleTabChange);
+            chrome.tabs.onCreated.removeListener(handleTabChange);
+        };
     }, []);
 
     return (

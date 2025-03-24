@@ -7,7 +7,5 @@ export default async (windowId: number, setTabs: Function) => {
         }, resolve);
     });
 
-    console.log(tabs);
-
     setTabs(tabs);
 }

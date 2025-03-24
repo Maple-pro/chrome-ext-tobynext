@@ -1,7 +1,7 @@
 import React, { JSX, useEffect, useState } from "react";
-import addBlueIcon from "@assets/add-blue.svg";
+import addSpaceIcon from "@assets/add-space.svg";
 import folderIcon from "@assets/folder.svg";
-import folderBlueIcon from '@assets/folder-blue.svg';
+import selectedFolderIcon from '@assets/folder-selected.svg';
 import fetchSubFolder from "../utils/fetchSubFolder";
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
@@ -18,12 +18,15 @@ const Spaces = (props: SpacesProps): JSX.Element => {
 
     useEffect(() => {
         fetchSubFolder(workspace, setSpaces);
-    }, []);
+    }, [workspace]);
 
     useEffect(() => {
         if (spaces.length != 0) {
             setCurrentSpace(spaces[0]);
             console.log("Current space: " + spaces[0].title);
+        } else {
+            setCurrentSpace(undefined);
+            console.log("No current space");
         }
     }, [spaces]);
 
@@ -38,25 +41,20 @@ const Spaces = (props: SpacesProps): JSX.Element => {
                     SPACES
                 </div>
                 <div id="add-space">
-                    <img src={addBlueIcon} className="w-15 h-15" />
+                    <img src={addSpaceIcon} className="w-15 h-15" />
                 </div>
             </div>
             <div id="spaces-container" className="flex flex-col pt-15">
-                {spaces.map(space => currentSpace && space.id === currentSpace.id ? (
-                    <div id={"space-" + space.title} className="w-full h-25 mb-5 flex items-center justify-start">
+                {spaces.map(space => (
+                    <div 
+                        id={"space-" + space.title} 
+                        onClick={() => setCurrentSpace(space)}
+                        className="w-full h-25 mb-5 flex items-center justify-start cursor-pointer"
+                    >
                         <div id="space-icon" className="mr-10">
-                            <img src={folderBlueIcon} className="w-15 h-15" />
+                            <img src={currentSpace && space.id === currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
                         </div>
-                        <div id="space-title" className="text-[14px] font-bold text-[#3c5cce]">
-                            {space.title}
-                        </div>
-                    </div>
-                ) : (
-                    <div id={"space-" + space.title} className="w-full h-25 mb-5 flex items-center justify-start">
-                        <div id="space-icon" className="mr-10">
-                            <img src={folderIcon} className="w-15 h-15" />
-                        </div>
-                        <div id="space-title" className="text-[14px]">
+                        <div id="space-title" className={`text-[14px] ${currentSpace && space.id === currentSpace.id ? "font-bold text-[#3c5cce]" : ""} `}>
                             {space.title}
                         </div>
                     </div>

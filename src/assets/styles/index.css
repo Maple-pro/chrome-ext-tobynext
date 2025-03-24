@@ -83,6 +83,7 @@
   letter-spacing: normal;
 
   /* @property for shadow dom */
+  /* https://github.com/tailwindlabs/tailwindcss/discussions/16772 */
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-translate-z: 0;

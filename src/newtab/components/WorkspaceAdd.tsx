@@ -1,5 +1,5 @@
 import React, { JSX } from "react";
-import addIcon from "@assets/add.svg";
+import addIcon from "@assets/add-workspace.svg";
 
 
 const WorkspaceAdd = (): JSX.Element => {
