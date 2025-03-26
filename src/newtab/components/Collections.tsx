@@ -6,6 +6,8 @@ type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface SpacesProps {
     space: BookmarkTreeNode | undefined,
+    forceUpdate: number,
+    refreshCollections: Function,
 }
 
 const Collections = (props: SpacesProps): JSX.Element => {
@@ -17,12 +19,12 @@ const Collections = (props: SpacesProps): JSX.Element => {
         } else {
             setCollections([]);
         }
-    }, [props.space]);
+    }, [props.space, props.forceUpdate]);
 
     return (
         <div id="collection-panel" className="w-full grow-0 flex flex-col overflow-y-auto">
             {collections.map(collection => (
-                <Collection collection={collection} />
+                <Collection collection={collection} refreshCollections={props.refreshCollections} />
             ))}
         </div>
     );

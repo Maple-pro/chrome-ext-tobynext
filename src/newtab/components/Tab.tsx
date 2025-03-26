@@ -1,5 +1,5 @@
 import React, { JSX } from "react";
-import documentIcon from "@assets/default-fav-icon.svg";
+import defaultFavicon from "@assets/default-fav-icon.svg";
 import closeIcon from "@assets/close-tab.svg";
 
 type ChromeTab = chrome.tabs.Tab;
@@ -17,7 +17,14 @@ const Tab = (props: TabProps): JSX.Element => {
                 }
             });
         }
-    }
+    };
+
+    const handleCloseTab = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        if (props.tab.id) {
+            chrome.tabs.remove(props.tab.id);
+        }
+    };
 
     return (
         <div
@@ -27,9 +34,9 @@ const Tab = (props: TabProps): JSX.Element => {
         >
             <div id="tab-icon" className="flex-none w-15 h-15 mr-10 flex items-center justify-center">
                 <img 
-                    src={props.tab.favIconUrl ? props.tab.favIconUrl : documentIcon} 
+                    src={props.tab.favIconUrl ? props.tab.favIconUrl : defaultFavicon} 
                     onError={e => {
-                        e.currentTarget.src = documentIcon;
+                        e.currentTarget.src = defaultFavicon;
                     }}
                     className="w-full h-full object-contain" 
                 /> 
@@ -37,7 +44,7 @@ const Tab = (props: TabProps): JSX.Element => {
             <div id="tab-title" className="text-[14px] truncate">
                 {props.tab.title}
             </div>
-            <div id="tab-close-button" className="flex-none ml-auto w-15 h-15 hidden group-hover:flex items-center justify-center">
+            <div id="tab-close-button" onClick={handleCloseTab} className="flex-none ml-auto w-15 h-15 hidden group-hover:flex items-center justify-center">
                 <img src={closeIcon} className="w-full h-full" />
             </div>
         </div>

@@ -15,27 +15,22 @@ import Windows from "./components/Windows";
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 export default function NewTab(): JSX.Element {
-    const workspaceAddComponent = <WorkspaceAdd />;
-    const searchComponent = <Search />;
-    const tabNameComponent = <TabName />;
-    const windowsComponent = <Windows />;
-
     const [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
-    const [workspacesComponent, setWorkspacesComponent] = useState<JSX.Element>();
     const [currentWorkspace, setCurrentWorkspace] = useState<BookmarkTreeNode | undefined>();
-    const [workspaceNameComponent, setWorkspaceNameComponent] = useState<JSX.Element>();
-    const [spacesComponent, setSpacesComponent] = useState<JSX.Element>();
     const [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
-    const [spaceNameComponent, setSpaceNameComponent] = useState<JSX.Element>();
-    const [collections, setCollections] = useState<BookmarkTreeNode[]>();
-    const [collectionsComponent, setCollectionsComponent] = useState<JSX.Element>();
+    const [collections, setCollections] = useState<BookmarkTreeNode[]>([]);
+    const [forceUpdateCollections, setForceUpdateCollections] = useState(0);
 
-    const getCurrentWorkspace = (defaultWorkspace: BookmarkTreeNode) => {
-        setCurrentWorkspace(defaultWorkspace);
+    const refreshCollections = () => {
+        setForceUpdateCollections(prev => prev + 1);
+    };
+
+    const getCurrentWorkspace = (currentWorkspace: BookmarkTreeNode) => {
+        setCurrentWorkspace(currentWorkspace);
     }
 
-    const getCurrentSpace = (defaultSpace: BookmarkTreeNode) => {
-        setCurrentSpace(defaultSpace);
+    const getCurrentSpace = (currentSpace: BookmarkTreeNode) => {
+        setCurrentSpace(currentSpace);
     }
 
     useEffect(() => {
@@ -48,31 +43,6 @@ export default function NewTab(): JSX.Element {
     }, []);
 
     useEffect(() => {
-        if (rootFolder) {
-            setWorkspacesComponent(<Workspaces folder={rootFolder} getCurrentWorkspace={getCurrentWorkspace} />);
-        }
-    }, [rootFolder]);
-
-    useEffect(() => {
-        const workspaceName = currentWorkspace ? currentWorkspace.title : "";
-        setWorkspaceNameComponent(<WorkspaceName workspaceName={workspaceName} />);
-    }, [currentWorkspace]);
-
-    useEffect(() => {
-        if (currentWorkspace) {
-            setSpacesComponent(<Spaces workspace={currentWorkspace} getCurrentSpace={getCurrentSpace} />);
-        }
-    }, [currentWorkspace]);
-
-    useEffect(() => {
-        if (currentSpace) {
-            console.log("Current space: " + currentSpace.title);
-        } else {
-            console.log("No current space");
-        }
-    }, [currentSpace]);
-
-    useEffect(() => {
         if (currentSpace) {
             fetchSubFolder(currentSpace, setCollections);
         } else {
@@ -80,37 +50,27 @@ export default function NewTab(): JSX.Element {
         }
     }, [currentSpace]);
 
-    useEffect(() => {
-        const spaceName = currentSpace ? currentSpace.title : "";
-        const collectionNum = collections ? collections.length : 0;
-        setSpaceNameComponent(<SpaceName spaceName={spaceName} collectionsNum={collectionNum} />);
-    }, [currentSpace, collections]);
-
-    useEffect(() => {
-        setCollectionsComponent(<Collections space={currentSpace} />);
-    }, [currentSpace]);
-
     return (
         <div id="my-ext" data-theme="light">
             <div id="main-container" className="h-screen w-screen flex bg-[#FAFAFA]">
                 <div id="navigation-panel-group" className="h-full flex-none basis-290 flex">
                     <div id="workspace-panel" className="h-full flex-none basis-70 py-16 flex flex-col">
-                        {workspacesComponent}
-                        {workspaceAddComponent}
+                        {rootFolder && <Workspaces folder={rootFolder} getCurrentWorkspace={getCurrentWorkspace}/>}
+                        <WorkspaceAdd />
                     </div>
                     <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-[#DDDDF5] flex flex-col">
-                        {workspaceNameComponent}
-                        {searchComponent}
-                        {spacesComponent}
+                        {currentSpace && <WorkspaceName workspace={currentSpace} />}
+                        <Search />
+                        {currentWorkspace && <Spaces workspace={currentWorkspace} getCurrentSpace={getCurrentSpace} />}
                     </div>
                 </div>
                 <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-[#DDDDF5] flex flex-col max-w-[calc(100vw-510px)]">
-                    {spaceNameComponent}
-                    {collectionsComponent}
+                    <SpaceName space={currentSpace} collections={collections} />
+                    <Collections space={currentSpace} forceUpdate={forceUpdateCollections} refreshCollections={refreshCollections} />
                 </div>
                 <div id="tab-container" className="h-full flex-none basis-220 max-w-220 flex flex-col">
-                    {tabNameComponent}
-                    {windowsComponent}
+                    <TabName />
+                    <Windows refreshCollections={refreshCollections} currentSpace={currentSpace} />
                 </div>
             </div>
         </div>
