@@ -20,9 +20,19 @@ export default function NewTab(): JSX.Element {
     const [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
     const [collections, setCollections] = useState<BookmarkTreeNode[]>([]);
     const [forceUpdateCollections, setForceUpdateCollections] = useState(0);
+    const [forceUpdateSpaces, setForceUpdateSpaces] = useState(0);
+    const [forceUpdateWorkspaces, setForceUpdateWorkspaces] = useState(0);
 
     const refreshCollections = () => {
         setForceUpdateCollections(prev => prev + 1);
+    };
+
+    const refreshSpaces = () => {
+        setForceUpdateSpaces(prev => prev + 1);
+    };
+
+    const refreshWorkspace = () => {
+        setForceUpdateWorkspaces(prev => prev + 1);
     };
 
     const getCurrentWorkspace = (currentWorkspace: BookmarkTreeNode) => {
@@ -55,17 +65,17 @@ export default function NewTab(): JSX.Element {
             <div id="main-container" className="h-screen w-screen flex bg-[#FAFAFA]">
                 <div id="navigation-panel-group" className="h-full flex-none basis-290 flex">
                     <div id="workspace-panel" className="h-full flex-none basis-70 py-16 flex flex-col">
-                        {rootFolder && <Workspaces folder={rootFolder} getCurrentWorkspace={getCurrentWorkspace}/>}
-                        <WorkspaceAdd />
+                        {rootFolder && <Workspaces rootFolder={rootFolder} getCurrentWorkspace={getCurrentWorkspace} forceUpdate={forceUpdateWorkspaces} currentWorkspace={currentWorkspace} />}
+                        {rootFolder && <WorkspaceAdd rootFolder={rootFolder} getCurrentWorkspace={getCurrentWorkspace} refreshWorkspace={refreshWorkspace} />}
                     </div>
                     <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-[#DDDDF5] flex flex-col">
-                        {currentSpace && <WorkspaceName workspace={currentSpace} />}
+                        {currentWorkspace && <WorkspaceName workspace={currentWorkspace} />}
                         <Search />
-                        {currentWorkspace && <Spaces workspace={currentWorkspace} getCurrentSpace={getCurrentSpace} />}
+                        {currentWorkspace && <Spaces workspace={currentWorkspace} getCurrentSpace={getCurrentSpace} forceUpdate={forceUpdateSpaces} refreshSpaces={refreshSpaces} currentSpace={currentSpace}/>}
                     </div>
                 </div>
                 <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-[#DDDDF5] flex flex-col max-w-[calc(100vw-510px)]">
-                    <SpaceName space={currentSpace} collections={collections} />
+                    <SpaceName space={currentSpace} collections={collections} refreshCollections={refreshCollections} />
                     <Collections space={currentSpace} forceUpdate={forceUpdateCollections} refreshCollections={refreshCollections} />
                 </div>
                 <div id="tab-container" className="h-full flex-none basis-220 max-w-220 flex flex-col">

@@ -4,8 +4,10 @@ import fetchSubFolder from "../utils/fetchSubFolder";
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WorkspacesProps {
-    folder: BookmarkTreeNode,
+    rootFolder: BookmarkTreeNode,
     getCurrentWorkspace: Function,
+    forceUpdate: number,
+    currentWorkspace: BookmarkTreeNode | undefined,
 }
 
 
@@ -22,16 +24,20 @@ const outlineColors = [
 const Workspaces = (props: WorkspacesProps): JSX.Element => {
     const [workspaces, setWorkspaces] = useState<BookmarkTreeNode[]>([]);
     const [currentWorkspace, setCurrentWorkspace] = useState<BookmarkTreeNode>();
-    const rootFolder = props.folder;
+    const rootFolder = props.rootFolder;
 
     useEffect(() => {
         fetchSubFolder(rootFolder, setWorkspaces);
-    }, []);
+    }, [props.forceUpdate]);
 
     useEffect(() => {
-        if (workspaces.length != 0) {
-            setCurrentWorkspace(workspaces[0]);
-            console.log("Current workspace: " + workspaces[0].title);
+        if (props.currentWorkspace) {
+            setCurrentWorkspace(props.currentWorkspace);
+        } else {
+            if (workspaces.length != 0) {
+                setCurrentWorkspace(workspaces[0]);
+                console.log("Current workspace: " + workspaces[0].title);
+            }
         }
     }, [workspaces]);
 
