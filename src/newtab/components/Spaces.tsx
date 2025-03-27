@@ -8,7 +8,7 @@ import FolderCreateModal from "./FolderCreateModal";
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface SpacesProps {
-    workspace: BookmarkTreeNode,
+    currentWorkspace: BookmarkTreeNode,
     getCurrentSpace: Function,
     forceUpdate: number,
     refreshSpaces: Function,
@@ -17,37 +17,42 @@ interface SpacesProps {
 
 const Spaces = (props: SpacesProps): JSX.Element => {
     const [spaces, setSpaces] = useState<BookmarkTreeNode[]>([]);
-    const [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode>();
-
     const [isNewSpaceModalOpen, setIsNewSpaceModalOpen] = useState(false);
 
     useEffect(() => {
-        fetchSubFolder(props.workspace, setSpaces);
-    }, [props.workspace, props.forceUpdate]);
+        console.log("current space: " + props.currentSpace?.title);
+    }, [props.currentSpace]);
 
+    // get all spaces
     useEffect(() => {
-        if (props.currentSpace && props.currentSpace.parentId === props.workspace.id) {
-            setCurrentSpace(props.currentSpace)
-        } else {
-            if (spaces.length != 0) {
-                setCurrentSpace(spaces[0]);
-                console.log("Current space: " + spaces[0].title);
+        fetchSubFolder(props.currentWorkspace, setSpaces);
+    }, [props.currentWorkspace, props.forceUpdate]);
+
+    // When `props.currentSpace` is undefined or `props.currentSpace.parentId` is not `props.currentWorkspace`
+    // use default spaces
+    useEffect(() => {
+        if (!props.currentSpace || props.currentSpace.parentId !== props.currentWorkspace.id) {
+            // use default spaces
+            if (spaces.length == 0) {
+                props.getCurrentSpace(undefined);
+                console.log("Use default space: undefined");
             } else {
-                setCurrentSpace(undefined);
-                console.log("No current space");
+                if (spaces[0].parentId === props.currentWorkspace.id) {
+                    props.getCurrentSpace(spaces[0]);
+                    console.log("Use default space: " + spaces[0].title);
+                } else {
+                    props.getCurrentSpace(undefined);
+                    console.log("Use default space: undefined");
+                }
             }
         }
-    }, [spaces]);
-
-    useEffect(() => {
-        props.getCurrentSpace(currentSpace);
-    }, [currentSpace])
+    }, [spaces, props.currentSpace, props.getCurrentSpace])
 
     const handleCreateSpace = (title: string) => {
         chrome.bookmarks.create(
             {
                 title: title,
-                parentId: props.workspace.id,
+                parentId: props.currentWorkspace.id,
             },
             (newSpace) => {
                 props.getCurrentSpace(newSpace);
@@ -71,13 +76,13 @@ const Spaces = (props: SpacesProps): JSX.Element => {
                 {spaces.map(space => (
                     <div
                         id={"space-" + space.title}
-                        onClick={() => setCurrentSpace(space)}
+                        onClick={() => props.getCurrentSpace(space)}
                         className="w-full h-25 mb-5 flex items-center justify-start cursor-pointer"
                     >
                         <div id="space-icon" className="mr-10">
-                            <img src={currentSpace && space.id === currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
+                            <img src={props.currentSpace && space.id === props.currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
                         </div>
-                        <div id="space-title" className={`text-[14px] ${currentSpace && space.id === currentSpace.id ? "font-bold text-[#3c5cce]" : ""} `}>
+                        <div id="space-title" className={`text-[14px] ${props.currentSpace && space.id === props.currentSpace.id ? "font-bold text-[#3c5cce]" : ""} `}>
                             {space.title}
                         </div>
                     </div>

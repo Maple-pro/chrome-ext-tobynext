@@ -9,8 +9,6 @@ export default async (folder: BookmarkTreeNode, setSubBookmark: Function) => {
         return;
     }
 
-    console.log("Get subBookmarks of: " + folder.title);
-
     const children = await new Promise<BookmarkTreeNode[]>(resolve => {
         chrome.bookmarks.getChildren(folder.id, resolve);
     });

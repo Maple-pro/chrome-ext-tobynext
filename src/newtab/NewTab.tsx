@@ -10,27 +10,32 @@ import fetchSubFolder from "./utils/fetchSubFolder";
 import Collections from "./components/Collections";
 import TabName from "./components/TabName";
 import Windows from "./components/Windows";
+import { useStoredState } from "./hooks/useStoredState";
 
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 export default function NewTab(): JSX.Element {
     const [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
-    const [currentWorkspace, setCurrentWorkspace] = useState<BookmarkTreeNode | undefined>();
-    const [currentSpace, setCurrentSpace] = useState<BookmarkTreeNode | undefined>();
+    const [currentWorkspace, setCurrentWorkspace] = useStoredState<BookmarkTreeNode | undefined>("currentWorkspace");
+    const [currentSpace, setCurrentSpace] = useStoredState<BookmarkTreeNode | undefined>("currentSpace");
     const [collections, setCollections] = useState<BookmarkTreeNode[]>([]);
     const [forceUpdateCollections, setForceUpdateCollections] = useState(0);
     const [forceUpdateSpaces, setForceUpdateSpaces] = useState(0);
     const [forceUpdateWorkspaces, setForceUpdateWorkspaces] = useState(0);
 
+
+    // force refresh collections
     const refreshCollections = () => {
         setForceUpdateCollections(prev => prev + 1);
     };
 
+    // force refresh spaces
     const refreshSpaces = () => {
         setForceUpdateSpaces(prev => prev + 1);
     };
 
+    // force refresh workspaces
     const refreshWorkspace = () => {
         setForceUpdateWorkspaces(prev => prev + 1);
     };
@@ -43,6 +48,7 @@ export default function NewTab(): JSX.Element {
         setCurrentSpace(currentSpace);
     }
 
+    // get rootFolder
     useEffect(() => {
         const fetchRootFolder = async () => {
             const folder = await findRootFolder();
@@ -52,6 +58,7 @@ export default function NewTab(): JSX.Element {
         fetchRootFolder();
     }, []);
 
+    // get collections
     useEffect(() => {
         if (currentSpace) {
             fetchSubFolder(currentSpace, setCollections);
@@ -71,7 +78,7 @@ export default function NewTab(): JSX.Element {
                     <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-[#DDDDF5] flex flex-col">
                         {currentWorkspace && <WorkspaceName workspace={currentWorkspace} />}
                         <Search />
-                        {currentWorkspace && <Spaces workspace={currentWorkspace} getCurrentSpace={getCurrentSpace} forceUpdate={forceUpdateSpaces} refreshSpaces={refreshSpaces} currentSpace={currentSpace}/>}
+                        {currentWorkspace && <Spaces currentWorkspace={currentWorkspace} getCurrentSpace={getCurrentSpace} forceUpdate={forceUpdateSpaces} refreshSpaces={refreshSpaces} currentSpace={currentSpace}/>}
                     </div>
                 </div>
                 <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-[#DDDDF5] flex flex-col max-w-[calc(100vw-510px)]">
