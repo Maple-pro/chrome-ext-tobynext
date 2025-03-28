@@ -1,29 +1,25 @@
 import React, { JSX, useState } from "react";
 import FolderCreateModal from "./FolderCreateModal";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
-interface SpaceNameProps {
-    space: BookmarkTreeNode | undefined,
-    collections: BookmarkTreeNode[],
-    refreshCollections: Function,
-}
-
-const SpaceName = (props: SpaceNameProps): JSX.Element => {
+const SpaceName = (): JSX.Element => {
     const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] = useState(false);
+    const {currentSpace, collections, refreshCollections} = useNewTabContext();
 
     const handleCreateCollection = (title: string) => {
-        if (!props.space) {
+        if (!currentSpace) {
             return;
         }
 
         chrome.bookmarks.create(
             {
                 title: title,
-                parentId: props.space.id,
+                parentId: currentSpace.id,
                 index: 0,
             },
             () => {
-                props.refreshCollections();
+                refreshCollections();
                 setIsNewCollectionModalOpen(false);
             }
         )
@@ -33,10 +29,10 @@ const SpaceName = (props: SpaceNameProps): JSX.Element => {
         <div id="space-name-panel" className="w-full h-50 flex-none flex items-center justify-between px-30 border-b-1 border-solid border-toby-outline-gray">
             <div id="space-name-container" className="flex flex-row items-center">
                 <div id="space-name" className="text-[18px]">
-                    {props.space ? props.space.title : ""}
+                    {currentSpace ? currentSpace.title : ""}
                 </div>
-                <div id="collection-number" className={`ml-20 text-[12px] text-[#70708C] ${props.space ? "invisible" : "visible"}`}>
-                    | {props.collections.length} collections
+                <div id="collection-number" className={`ml-20 text-[12px] text-[#70708C] ${currentSpace ? "visible" : "invisible"}`}>
+                    | {collections.length} collections
                 </div>
             </div>
             <div id="add-collection-button" className="bg-toby-blue rounded-md text-toby-bg-gray flex items-center justify-center cursor-pointer">

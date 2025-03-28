@@ -1,5 +1,5 @@
-import React, { useEffect, useState, JSX } from "react";
-import fetchSubFolder from "../utils/fetchSubFolder";
+import React, { useEffect, JSX } from "react";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
 const workspaceColors = [
@@ -12,43 +12,22 @@ const outlineColors = [
     "outline-green-300", "outline-emerald-300", "outline-teal-300", "outline-cyan-300", "outline-sky-300",
 ]
 
-interface WorkspacesProps {
-    rootFolder: BookmarkTreeNode,
-    getCurrentWorkspace: Function,
-    forceUpdate: number,
-    currentWorkspace: BookmarkTreeNode | undefined,
-}
-
-const Workspaces = (props: WorkspacesProps): JSX.Element => {
-    const [workspaces, setWorkspaces] = useState<BookmarkTreeNode[]>([]);
+const Workspaces = (): JSX.Element => {
+    const {currentWorkspace, setCurrentWorkspace, workspaces} = useNewTabContext();
 
     useEffect(() => {
-        console.log("current workspace: " + props.currentWorkspace?.title);
-    }, [props.currentWorkspace])
-
-    // get all worksapces
-    useEffect(() => {
-        fetchSubFolder(props.rootFolder, setWorkspaces);
-    }, [props.rootFolder, props.forceUpdate]);
-
-    // When `props.currentWorkspace` is undefined and workspaces is not empty, use default workspace
-    useEffect(() => {
-        if (workspaces.length > 0 && !props.currentWorkspace) {
-            // notify parent component
-            props.getCurrentWorkspace(workspaces[0]); 
-            console.log("Use default workspace: " + workspaces[0].title);
-        }
-    }, [workspaces, props.currentWorkspace, props.getCurrentWorkspace]);
+        console.log("current workspace: " + currentWorkspace?.title);
+    }, [currentWorkspace])
 
     return (
         <div id="workspaces" className="flex flex-col justify-center items-center px-5">
             {workspaces.map((workspace, index) => (
                 <div
                     id={"workspace-" + workspace.title}
-                    onClick={() => props.getCurrentWorkspace(workspace)}
+                    onClick={() => setCurrentWorkspace(workspace)}
                     className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl cursor-pointer
                         ${workspaceColors[index % workspaceColors.length]} 
-                        ${props.currentWorkspace && props.currentWorkspace.id === workspace.id ? 
+                        ${currentWorkspace && currentWorkspace.id === workspace.id ? 
                             `outline-2 outline-offset-2 outline-solid ${outlineColors[index % outlineColors.length]}` : ''}`}
                 >
                     <div id="workspace-name" className="truncate text-center text-toby-bg-gray leading-[1.2]">

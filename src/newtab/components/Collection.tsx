@@ -7,17 +7,16 @@ import moreIcon from "@assets/more.svg";
 import deleteCollectionIcon from "@assets/delete-collection.svg";
 import moveToIcon from "@assets/move-to.svg";
 import MoveCollectionModal from "./MoveCollectionModal";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
 interface CollectionProps {
     collection: BookmarkTreeNode,
-    refreshCollections: Function,
-    rootFolder: BookmarkTreeNode,
-    getCurrentWorkspace: Function,
-    getCurrentSpace: Function,
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
+    const {refreshCollections} = useNewTabContext();
+
     const [bookmarks, setBookmarks] = useState<BookmarkTreeNode[]>([]);
     const [isExpanded, setIsExpanded] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +24,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
 
+    // get bookmarks
     useEffect(() => {
         fetchSubBookmark(props.collection, setBookmarks);
     }, [props.collection]);
@@ -45,7 +45,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
     
     const handleDeleteCollection = async () => {
         await chrome.bookmarks.removeTree(props.collection.id);
-        props.refreshCollections();
+        refreshCollections();
     }
 
     const handleCollectionTitleClick = () => {
@@ -89,7 +89,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
                 title: tab.title || "New Tab",
                 url: tab.url,
             }, () => {
-                props.refreshCollections();
+                refreshCollections();
             });
         }
     };
@@ -164,9 +164,6 @@ const Collection = (props: CollectionProps): JSX.Element => {
                 isOpen={isMoveModalOpen}
                 onClose={() => setIsMoveModalOpen(false)}
                 collection={props.collection}
-                rootFolder={props.rootFolder}
-                getCurrentWorkspace={props.getCurrentWorkspace}
-                getCurrentSpace={props.getCurrentSpace}
             />
         </div>
     );

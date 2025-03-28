@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react"
 import fetchSubFolder from "../utils/fetchSubFolder";
 import getBookmarkById from "../utils/getBookmarkById";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
 interface MoveCollectionModalProps {
     isOpen: boolean,
     onClose: (e: React.MouseEvent) => void,
     collection: BookmarkTreeNode,
-    rootFolder: BookmarkTreeNode,
-    getCurrentWorkspace: Function,
-    getCurrentSpace: Function,
 }
 
-const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClose, collection, rootFolder, getCurrentWorkspace, getCurrentSpace }) => {
-    const [selectedWorkspace, setSelectedWorkspace] = useState<BookmarkTreeNode| null>(null);
-    const [selectedSpace, setSelectedSpace] = useState<BookmarkTreeNode | null>(null);
-    const [workspaces, setWorkspaces] = useState<BookmarkTreeNode[]>([]);
+const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClose, collection }) => {
+    const {workspaces, setCurrentWorkspace, setCurrentSpace} = useNewTabContext();
+    
     const [spaces, setSpaces] = useState<BookmarkTreeNode[]>([]);
+    const [selectedWorkspace, setSelectedWorkspace] = useState<BookmarkTreeNode>();
+    const [selectedSpace, setSelectedSpace] = useState<BookmarkTreeNode>();
     const DEFAULT_OPTION_VALUE = "DEFAULT";
-
-    // get workspaces
-    useEffect(() => {
-        fetchSubFolder(rootFolder, setWorkspaces);
-    }, [rootFolder]);
 
     // get spaces
     useEffect(() => {
@@ -37,16 +31,16 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClo
         if (selectedSpace) {
             chrome.bookmarks.move(collection.id, { parentId: selectedSpace.id, index: 0 }, () => {
                 onClose(e);
-                getCurrentWorkspace(selectedWorkspace);
-                getCurrentSpace(selectedSpace);
+                setCurrentWorkspace(selectedWorkspace);
+                setCurrentSpace(selectedSpace);
             })
         }
     };
 
     const handleClose = (e: React.MouseEvent) => {
         onClose(e);
-        setSelectedWorkspace(null);
-        setSelectedSpace(null);
+        setSelectedWorkspace(undefined);
+        setSelectedSpace(undefined);
     };
 
     if (!isOpen) {
@@ -67,7 +61,7 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClo
                         value={selectedWorkspace?.id || DEFAULT_OPTION_VALUE}
                         onChange={(e) => {
                             setSelectedWorkspace(getBookmarkById(e.target.value, workspaces));
-                            setSelectedSpace(null);
+                            setSelectedSpace(undefined);
                         }}
                         className="w-full p-4 border rounded text-[14px] h-35"
                     >

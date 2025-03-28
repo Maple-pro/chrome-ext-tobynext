@@ -2,63 +2,33 @@ import React, { JSX, useEffect, useState } from "react";
 import addSpaceIcon from "@assets/add-space.svg";
 import folderIcon from "@assets/folder.svg";
 import selectedFolderIcon from '@assets/folder-selected.svg';
-import fetchSubFolder from "../utils/fetchSubFolder";
 import FolderCreateModal from "./FolderCreateModal";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
-interface SpacesProps {
-    currentWorkspace: BookmarkTreeNode,
-    getCurrentSpace: Function,
-    forceUpdate: number,
-    refreshSpaces: Function,
-    currentSpace: BookmarkTreeNode | undefined,
-}
-
-const Spaces = (props: SpacesProps): JSX.Element => {
-    const [spaces, setSpaces] = useState<BookmarkTreeNode[]>([]);
+const Spaces = (): JSX.Element => {
+    const {spaces} = useNewTabContext();
     const [isNewSpaceModalOpen, setIsNewSpaceModalOpen] = useState(false);
+    const {currentWorkspace, currentSpace, setCurrentSpace, refreshSpaces} = useNewTabContext();
 
     useEffect(() => {
-        console.log("current space: " + props.currentSpace?.title);
-    }, [props.currentSpace]);
-
-    // get all spaces
-    useEffect(() => {
-        fetchSubFolder(props.currentWorkspace, setSpaces);
-    }, [props.currentWorkspace, props.forceUpdate]);
-
-    // When `props.currentSpace` is undefined or `props.currentSpace.parentId` is not `props.currentWorkspace`
-    // use default spaces
-    useEffect(() => {
-        if (!props.currentSpace || props.currentSpace.parentId !== props.currentWorkspace.id) {
-            // use default spaces
-            if (spaces.length == 0) {
-                props.getCurrentSpace(undefined);
-                console.log("Use default space: undefined");
-            } else {
-                if (spaces[0].parentId === props.currentWorkspace.id) {
-                    props.getCurrentSpace(spaces[0]);
-                    console.log("Use default space: " + spaces[0].title);
-                } else {
-                    props.getCurrentSpace(undefined);
-                    console.log("Use default space: undefined");
-                }
-            }
-        }
-    }, [spaces, props.currentSpace, props.getCurrentSpace])
+        console.log("current space: " + currentSpace?.title);
+    }, [currentSpace]);
 
     const handleCreateSpace = (title: string) => {
-        chrome.bookmarks.create(
-            {
-                title: title,
-                parentId: props.currentWorkspace.id,
-            },
-            (newSpace) => {
-                props.getCurrentSpace(newSpace);
-                props.refreshSpaces();
-                setIsNewSpaceModalOpen(false);
-            }
-        )
+        if (currentWorkspace) {
+            chrome.bookmarks.create(
+                {
+                    title: title,
+                    parentId: currentWorkspace.id,
+                },
+                (newSpace) => {
+                    setCurrentSpace(newSpace);
+                    refreshSpaces();
+                    setIsNewSpaceModalOpen(false);
+                }
+            );
+        }
     };
 
     return (
@@ -75,13 +45,13 @@ const Spaces = (props: SpacesProps): JSX.Element => {
                 {spaces.map(space => (
                     <div
                         id={"space-" + space.title}
-                        onClick={() => props.getCurrentSpace(space)}
+                        onClick={() => setCurrentSpace(space)}
                         className="w-full h-25 mb-5 flex items-center justify-start cursor-pointer"
                     >
                         <div id="space-icon" className="mr-10">
-                            <img src={props.currentSpace && space.id === props.currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
+                            <img src={currentSpace && space.id === currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
                         </div>
-                        <div id="space-title" className={`text-[14px] ${props.currentSpace && space.id === props.currentSpace.id ? "font-bold text-toby-blue" : ""} `}>
+                        <div id="space-title" className={`text-[14px] ${currentSpace && space.id === currentSpace.id ? "font-bold text-toby-blue" : ""} `}>
                             {space.title}
                         </div>
                     </div>

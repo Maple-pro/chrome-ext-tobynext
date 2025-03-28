@@ -3,12 +3,7 @@ import fetchAllWindows from "../utils/fetchAllWindows";
 import Window from "./Window";
 
 
-interface WindowsProps {
-    refreshCollections: Function,
-    currentSpace: BookmarkTreeNode | undefined,
-};
-
-const Windows = (props: WindowsProps): JSX.Element => {
+const Windows = (): JSX.Element => {
     const [windows, setWindows] = useState<ChromeWindow[]>([]);
 
     useEffect(() => {
@@ -36,7 +31,7 @@ const Windows = (props: WindowsProps): JSX.Element => {
     return (
         <div id="windows-panel" className="w-full flex flex-col p-10 items-center overflow-y-auto no-scrollbar">
             {windows.map((window, index) => (
-                <Window window={window} index={index + 1} refreshCollections={props.refreshCollections} currentSpace={props.currentSpace} />
+                <Window window={window} index={index + 1} />
             ))}
         </div>
     );

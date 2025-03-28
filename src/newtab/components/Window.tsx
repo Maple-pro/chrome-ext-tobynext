@@ -4,19 +4,19 @@ import Tab from "./Tab";
 import expandWindowIcon from "@assets/expand-window.svg";
 import saveWindowIcon from "@assets/save-window.svg";
 import closeWindowIcon from "@assets/close-window.svg";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
 interface WindowProps {
     window: ChromeWindow,
     index: number,
-    refreshCollections: Function,
-    currentSpace: BookmarkTreeNode | undefined,
 }
 
 const Window = (props: WindowProps): JSX.Element => {
     const [tabs, setTabs] = useState<ChromeTab[]>([]);
     const [filteredTabs, setFilteredTabs] = useState<ChromeTab[]>([]);
     const [isExpanded, setIsExpanded] = useState(true);
+    const {refreshCollections, currentSpace} = useNewTabContext();
 
     useEffect(() => {
         if (props.window && props.window.id) {
@@ -55,13 +55,13 @@ const Window = (props: WindowProps): JSX.Element => {
     };
 
     const handleSaveWindow = async (event: React.MouseEvent) => {
-        if (!props.currentSpace || !props.currentSpace.id) {
+        if (!currentSpace || !currentSpace.id) {
             console.log("No current space, cannot save session");
             return;
         }
         event.stopPropagation();
         const newCollection = await chrome.bookmarks.create({
-            parentId: props.currentSpace.id,
+            parentId: currentSpace.id,
             title: generateSavedCollectionTitle(),
             index: 0,
         });
@@ -76,7 +76,7 @@ const Window = (props: WindowProps): JSX.Element => {
             }
         }
 
-        props.refreshCollections();
+        refreshCollections();
     };
 
     return (
