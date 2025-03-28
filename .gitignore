@@ -26,3 +26,5 @@ dist-ssr
 # typescript build files
 build
 
+dist.pem
+
