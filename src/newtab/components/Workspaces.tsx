@@ -25,7 +25,7 @@ const Workspaces = (): JSX.Element => {
                 <div
                     id={"workspace-" + workspace.title}
                     onClick={() => setCurrentWorkspace(workspace)}
-                    className={`mb-10 w-40 h-40 flex justify-center items-center rounded-xl cursor-pointer
+                    className={`mb-10 w-40 h-40 px-2 flex justify-center items-center rounded-xl cursor-pointer
                         ${workspaceColors[index % workspaceColors.length]} 
                         ${currentWorkspace && currentWorkspace.id === workspace.id ? 
                             `outline-2 outline-offset-2 outline-solid ${outlineColors[index % outlineColors.length]}` : ''}`}
