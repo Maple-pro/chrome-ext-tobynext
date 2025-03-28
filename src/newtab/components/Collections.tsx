@@ -2,7 +2,6 @@ import React, { JSX, useEffect, useState } from "react";
 import fetchSubFolder from "../utils/fetchSubFolder";
 import Collection from "./Collection";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface SpacesProps {
     space: BookmarkTreeNode | undefined,

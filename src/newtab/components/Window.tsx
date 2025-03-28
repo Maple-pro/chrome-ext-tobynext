@@ -5,9 +5,6 @@ import expandWindowIcon from "@assets/expand-window.svg";
 import saveWindowIcon from "@assets/save-window.svg";
 import closeWindowIcon from "@assets/close-window.svg";
 
-type ChromeWindow = chrome.windows.Window;
-type ChromeTab = chrome.tabs.Tab;
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WindowProps {
     window: ChromeWindow,

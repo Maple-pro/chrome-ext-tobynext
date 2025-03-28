@@ -1,6 +1,5 @@
 import React, { JSX } from "react";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WorkspaceNameProps {
     workspace: BookmarkTreeNode,

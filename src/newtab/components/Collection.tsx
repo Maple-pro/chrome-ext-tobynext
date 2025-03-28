@@ -9,8 +9,6 @@ import moveToIcon from "@assets/move-to.svg";
 import MoveCollectionModal from "./MoveCollectionModal";
 
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
-
 interface CollectionProps {
     collection: BookmarkTreeNode,
     refreshCollections: Function,

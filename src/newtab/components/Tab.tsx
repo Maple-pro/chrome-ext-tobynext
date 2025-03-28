@@ -2,8 +2,6 @@ import React, { JSX } from "react";
 import defaultFavicon from "@assets/default-fav-icon.svg";
 import closeIcon from "@assets/close-tab.svg";
 
-type ChromeTab = chrome.tabs.Tab;
-
 interface TabProps {
     tab: ChromeTab,
 }

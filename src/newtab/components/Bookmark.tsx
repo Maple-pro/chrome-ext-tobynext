@@ -3,7 +3,6 @@ import deleteBookmarkIcon from "@assets/close-tab.svg";
 import editBookmarkIcon from "@assets/edit-bookmark.svg";
 import defaultFavicon from "@assets/default-fav-icon.svg";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface BookmarkProps {
     bookmark: BookmarkTreeNode,

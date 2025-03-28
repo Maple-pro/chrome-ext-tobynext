@@ -3,8 +3,6 @@ import fetchSubFolder from "../utils/fetchSubFolder";
 import getBookmarkById from "../utils/getBookmarkById";
 
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
-
 interface MoveCollectionModalProps {
     isOpen: boolean,
     onClose: (e: React.MouseEvent) => void,

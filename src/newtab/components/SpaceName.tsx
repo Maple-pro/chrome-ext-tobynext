@@ -1,7 +1,6 @@
 import React, { JSX, useState } from "react";
 import FolderCreateModal from "./FolderCreateModal";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface SpaceNameProps {
     space: BookmarkTreeNode | undefined,

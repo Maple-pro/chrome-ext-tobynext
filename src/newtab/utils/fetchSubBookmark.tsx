@@ -1,5 +1,3 @@
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
-
 export default async (folder: BookmarkTreeNode, setSubBookmark: Function) => {
     if (!folder || folder.url) {
         if (folder) {

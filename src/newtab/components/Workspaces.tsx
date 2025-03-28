@@ -1,7 +1,6 @@
 import React, { useEffect, useState, JSX } from "react";
 import fetchSubFolder from "../utils/fetchSubFolder";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 const workspaceColors = [
     "bg-red-300", "bg-orange-300", "bg-amber-300", "bg-yellow-300", "bg-lime-300",

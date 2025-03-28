@@ -2,8 +2,6 @@ import React, { JSX, useEffect, useState } from "react";
 import fetchAllWindows from "../utils/fetchAllWindows";
 import Window from "./Window";
 
-type ChromeWindow = chrome.windows.Window;
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WindowsProps {
     refreshCollections: Function,

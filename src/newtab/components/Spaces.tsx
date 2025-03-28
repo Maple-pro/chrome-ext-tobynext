@@ -5,7 +5,6 @@ import selectedFolderIcon from '@assets/folder-selected.svg';
 import fetchSubFolder from "../utils/fetchSubFolder";
 import FolderCreateModal from "./FolderCreateModal";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface SpacesProps {
     currentWorkspace: BookmarkTreeNode,

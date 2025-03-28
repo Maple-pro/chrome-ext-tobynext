@@ -2,7 +2,6 @@ import React, { JSX, useState } from "react";
 import addIcon from "@assets/add-workspace.svg";
 import FolderCreateModal from "./FolderCreateModal";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 interface WorkspaceAddProps {
     rootFolder: BookmarkTreeNode,

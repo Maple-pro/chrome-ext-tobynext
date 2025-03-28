@@ -13,8 +13,6 @@ import Windows from "./components/Windows";
 import { useStoredState } from "./hooks/useStoredState";
 
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
-
 export default function NewTab(): JSX.Element {
     const [rootFolder, setRootFolder] = useState<BookmarkTreeNode | undefined>();
     const [currentWorkspace, setCurrentWorkspace] = useStoredState<BookmarkTreeNode | undefined>("currentWorkspace");

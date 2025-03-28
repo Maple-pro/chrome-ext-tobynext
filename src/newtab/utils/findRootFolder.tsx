@@ -1,7 +1,6 @@
 const rootFolderTitle = "TobyNext";
 const bookmarkBarId = "1";
 
-type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 
 const findRootFolder = async (): Promise<BookmarkTreeNode> => {
     let rootFolder: BookmarkTreeNode | undefined;
