@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from "react";
 import addSpaceIcon from "@assets/add-space.svg";
 import folderIcon from "@assets/folder.svg";
 import selectedFolderIcon from '@assets/folder-selected.svg';
-import FolderCreateModal from "./FolderCreateModal";
+import FolderCreateModal from "../modals/FolderCreateModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 

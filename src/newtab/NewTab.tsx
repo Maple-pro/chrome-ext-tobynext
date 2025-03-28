@@ -9,6 +9,7 @@ import Collections from "./components/Collections";
 import TabName from "./components/TabName";
 import Windows from "./components/Windows";
 import { NewTabProvider, useNewTabContext } from "./context/NewTabContext";
+import TobyImport from "./components/TobyImport";
 
 
 export default function NewTab(): JSX.Element {
@@ -29,6 +30,7 @@ function NewTabContent(): JSX.Element {
                     <div id="workspace-panel" className="h-full flex-none basis-70 py-16 flex flex-col">
                         {rootFolder && <Workspaces />}
                         {rootFolder && <WorkspaceAdd />}
+                        <TobyImport />
                     </div>
                     <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-toby-outline-gray flex flex-col">
                         {currentWorkspace && <WorkspaceName />}

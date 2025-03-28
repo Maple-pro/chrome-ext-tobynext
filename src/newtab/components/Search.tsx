@@ -1,6 +1,6 @@
 import React, { JSX, useState } from "react";
 import searchIcon from "@assets/search.svg";
-import SearchModal from "./SearchModal";
+import SearchModal from "../modals/SearchModal";
 
 
 const Search = (): JSX.Element => {

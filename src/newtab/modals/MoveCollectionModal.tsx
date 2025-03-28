@@ -90,13 +90,13 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClo
 
                 {/* buttons */}
                 <div className="w-full flex justify-between items-center space-x-4">
-                    <button onClick={handleClose} className="basis-1/2 mx-10 px-10 py-5 rounded-md cursor-pointer text-toby-blue font-bold">Cancel</button>
+                    <button onClick={handleClose} className="basis-1/2 mx-10 px-10 py-5 rounded-md cursor-pointer text-toby-blue font-bold">CANCEL</button>
                     <button 
                         onClick={handleMove} 
                         className={`basis-1/2 mx-10 px-10 py-5 rounded ${selectedSpace ? "bg-toby-blue text-toby-bg-gray" : "text-gray-300 cursor-not-allowed outline-gray-300"}`}
                         disabled={!selectedSpace}
                     >
-                        Move
+                        MOVE
                     </button>
                 </div>
             </div>

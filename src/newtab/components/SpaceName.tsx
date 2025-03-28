@@ -1,5 +1,5 @@
 import React, { JSX, useState } from "react";
-import FolderCreateModal from "./FolderCreateModal";
+import FolderCreateModal from "../modals/FolderCreateModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 

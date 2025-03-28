@@ -1,6 +1,6 @@
 import React, { JSX, useState } from "react";
 import addIcon from "@assets/add-workspace.svg";
-import FolderCreateModal from "./FolderCreateModal";
+import FolderCreateModal from "../modals/FolderCreateModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 

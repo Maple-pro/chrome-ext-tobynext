@@ -6,7 +6,7 @@ import openCollectionIcon from "@assets/open-collection.svg";
 import moreIcon from "@assets/more.svg";
 import deleteCollectionIcon from "@assets/delete-collection.svg";
 import moveToIcon from "@assets/move-to.svg";
-import MoveCollectionModal from "./MoveCollectionModal";
+import MoveCollectionModal from "../modals/MoveCollectionModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 
@@ -27,6 +27,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
     // get bookmarks
     useEffect(() => {
         fetchSubBookmark(props.collection, setBookmarks);
+        setNewTitle(props.collection.title);
     }, [props.collection]);
 
     const handleExpandToggle = () => {
