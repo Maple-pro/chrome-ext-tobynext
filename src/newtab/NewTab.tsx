@@ -69,21 +69,21 @@ export default function NewTab(): JSX.Element {
 
     return (
         <div id="my-ext" data-theme="light">
-            <div id="main-container" className="h-screen w-screen flex bg-[#FAFAFA]">
+            <div id="main-container" className="h-screen w-screen flex bg-toby-bg-gray">
                 <div id="navigation-panel-group" className="h-full flex-none basis-290 flex">
                     <div id="workspace-panel" className="h-full flex-none basis-70 py-16 flex flex-col">
                         {rootFolder && <Workspaces rootFolder={rootFolder} getCurrentWorkspace={getCurrentWorkspace} forceUpdate={forceUpdateWorkspaces} currentWorkspace={currentWorkspace} />}
                         {rootFolder && <WorkspaceAdd rootFolder={rootFolder} getCurrentWorkspace={getCurrentWorkspace} refreshWorkspace={refreshWorkspace} />}
                     </div>
-                    <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-[#DDDDF5] flex flex-col">
+                    <div id="space-panel" className="h-full flex-none basis-220 border-x-1 border-solid border-toby-outline-gray flex flex-col">
                         {currentWorkspace && <WorkspaceName workspace={currentWorkspace} />}
                         <Search />
                         {currentWorkspace && <Spaces currentWorkspace={currentWorkspace} getCurrentSpace={getCurrentSpace} forceUpdate={forceUpdateSpaces} refreshSpaces={refreshSpaces} currentSpace={currentSpace}/>}
                     </div>
                 </div>
-                <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-[#DDDDF5] flex flex-col max-w-[calc(100vw-510px)]">
+                <div id="collection-container" className="h-full grow shrink basis-auto border-r-1 border-solid border-toby-outline-gray flex flex-col max-w-[calc(100vw-510px)]">
                     <SpaceName space={currentSpace} collections={collections} refreshCollections={refreshCollections} />
-                    <Collections space={currentSpace} forceUpdate={forceUpdateCollections} refreshCollections={refreshCollections} />
+                    <Collections space={currentSpace} forceUpdate={forceUpdateCollections} refreshCollections={refreshCollections} rootFolder={rootFolder!} getCurrentWorkspace={getCurrentWorkspace} getCurrentSpace={getCurrentSpace} />
                 </div>
                 <div id="tab-container" className="h-full flex-none basis-220 max-w-220 flex flex-col">
                     <TabName />

@@ -83,7 +83,7 @@ const Window = (props: WindowProps): JSX.Element => {
     };
 
     return (
-        <div id="window-container" className="w-full my-5 py-10 px-12 flex-none flex flex-col items-center rounded-sm border-1 border-solid border-[#DDDDF5] shadow-xs shadow-[#DDDDF5]">
+        <div id="window-container" className="w-full my-5 py-10 px-12 flex-none flex flex-col items-center rounded-sm border-1 border-solid border-toby-outline-gray shadow-xs shadow-toby-outline-gray">
             <div id="window-title-group" className="w-full mb-5 flex flex-row items-center justify-between">
                 <div id="window-title-group" className="flex flex-row items-center">
                     <div id="window-title" className="text-[12px] text-[#474759] mr-5">

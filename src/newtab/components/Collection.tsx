@@ -5,6 +5,8 @@ import expandCollectionIcon from "@assets/expand-window.svg";
 import openCollectionIcon from "@assets/open-collection.svg";
 import moreIcon from "@assets/more.svg";
 import deleteCollectionIcon from "@assets/delete-collection.svg";
+import moveToIcon from "@assets/move-to.svg";
+import MoveCollectionModal from "./MoveCollectionModal";
 
 
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
@@ -12,6 +14,9 @@ type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 interface CollectionProps {
     collection: BookmarkTreeNode,
     refreshCollections: Function,
+    rootFolder: BookmarkTreeNode,
+    getCurrentWorkspace: Function,
+    getCurrentSpace: Function,
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
@@ -19,6 +24,8 @@ const Collection = (props: CollectionProps): JSX.Element => {
     const [isExpanded, setIsExpanded] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(props.collection.title);
+    const [isDragOver, setIsDragOver] = useState(false);
+    const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
 
     useEffect(() => {
         fetchSubBookmark(props.collection, setBookmarks);
@@ -63,8 +70,41 @@ const Collection = (props: CollectionProps): JSX.Element => {
         }
     };
 
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragOver(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragOver(false);
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragOver(false);
+        const tabData = event.dataTransfer.getData("application/json");
+        if (tabData) {
+            const tab: chrome.tabs.Tab = JSON.parse(tabData);
+
+            chrome.bookmarks.create({
+                parentId: props.collection.id,
+                title: tab.title || "New Tab",
+                url: tab.url,
+            }, () => {
+                props.refreshCollections();
+            });
+        }
+    };
+
     return (
-        <div id="collection-container" className="w-full grow-0 px-30 py-24 border-b-1 border-solid border-[#DDDDF5] flex flex-col">
+        <div 
+            id="collection-container" 
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`w-full grow-0 px-30 py-24 flex flex-col
+                ${isDragOver ? "border-1 border-solid border-toby-blue" : "border-b-1 border-solid border-toby-outline-gray"}`}
+        >
             <div id="collection-title-container" className="flex flex-row items-center justify-between">
                 <div id="collection-title-group" className="flex flex-row items-center">
                     <div id="collection-title" className="text-[18px] flex-1 mr-15">
@@ -94,6 +134,13 @@ const Collection = (props: CollectionProps): JSX.Element => {
                 </div>
                 <div id="collection-button-group" className="flex flex-row">
                     <div 
+                        id="move-to-icon"
+                        onClick={() => setIsMoveModalOpen(true)}
+                        className="w-18 h-18 mx-10 flex justify-center items-center cursor-pointer"
+                    >
+                        <img src={moveToIcon} />
+                    </div>
+                    <div 
                         id="open-collection-icon" 
                         onClick={handleOpenCollection}
                         className="w-18 h-18 mx-10 flex justify-center items-center cursor-pointer"
@@ -115,6 +162,14 @@ const Collection = (props: CollectionProps): JSX.Element => {
                     ))}
                 </div>
             )}
+            <MoveCollectionModal
+                isOpen={isMoveModalOpen}
+                onClose={() => setIsMoveModalOpen(false)}
+                collection={props.collection}
+                rootFolder={props.rootFolder}
+                getCurrentWorkspace={props.getCurrentWorkspace}
+                getCurrentSpace={props.getCurrentSpace}
+            />
         </div>
     );
 }

@@ -8,6 +8,9 @@ interface SpacesProps {
     space: BookmarkTreeNode | undefined,
     forceUpdate: number,
     refreshCollections: Function,
+    rootFolder: BookmarkTreeNode,
+    getCurrentWorkspace: Function,
+    getCurrentSpace: Function,
 }
 
 const Collections = (props: SpacesProps): JSX.Element => {
@@ -24,7 +27,13 @@ const Collections = (props: SpacesProps): JSX.Element => {
     return (
         <div id="collection-panel" className="w-full grow-0 flex flex-col overflow-y-auto">
             {collections.map(collection => (
-                <Collection collection={collection} refreshCollections={props.refreshCollections} />
+                <Collection 
+                    collection={collection} 
+                    refreshCollections={props.refreshCollections} 
+                    rootFolder={props.rootFolder} 
+                    getCurrentWorkspace={props.getCurrentWorkspace}
+                    getCurrentSpace={props.getCurrentSpace}
+                />
             ))}
         </div>
     );

@@ -82,7 +82,7 @@ const Spaces = (props: SpacesProps): JSX.Element => {
                         <div id="space-icon" className="mr-10">
                             <img src={props.currentSpace && space.id === props.currentSpace.id ? selectedFolderIcon : folderIcon} className="w-15 h-15" />
                         </div>
-                        <div id="space-title" className={`text-[14px] ${props.currentSpace && space.id === props.currentSpace.id ? "font-bold text-[#3c5cce]" : ""} `}>
+                        <div id="space-title" className={`text-[14px] ${props.currentSpace && space.id === props.currentSpace.id ? "font-bold text-toby-blue" : ""} `}>
                             {space.title}
                         </div>
                     </div>

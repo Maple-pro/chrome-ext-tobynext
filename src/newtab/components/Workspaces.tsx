@@ -52,7 +52,7 @@ const Workspaces = (props: WorkspacesProps): JSX.Element => {
                         ${props.currentWorkspace && props.currentWorkspace.id === workspace.id ? 
                             `outline-2 outline-offset-2 outline-solid ${outlineColors[index % outlineColors.length]}` : ''}`}
                 >
-                    <div id="workspace-name" className="truncate text-center text-[#FAFAFA] leading-[1.2]">
+                    <div id="workspace-name" className="truncate text-center text-toby-bg-gray leading-[1.2]">
                         {workspace.title}
                     </div>
                 </div>

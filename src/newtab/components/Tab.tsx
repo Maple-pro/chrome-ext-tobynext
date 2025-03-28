@@ -22,15 +22,21 @@ const Tab = (props: TabProps): JSX.Element => {
     const handleCloseTab = (event: React.MouseEvent) => {
         event.stopPropagation();
         if (props.tab.id) {
-            chrome.tabs.remove(props.tab.id);
+            chrome.tabs.remove(props.tab.id );
         }
     };
+
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData("application/json", JSON.stringify(props.tab));
+    }
 
     return (
         <div
             id="tab" 
             onClick={handleTabClick}
-            className="group w-full h-35 my-5 py-5 px-10 flex flex-row items-center rounded-sm border-1 border-solid border-[#DDDDF5] shadow-sm shadow-[#DDDDF5] cursor-pointer"
+            draggable
+            onDragStart={handleDragStart}
+            className="group w-full h-35 my-5 py-5 px-10 flex flex-row items-center rounded-sm border-1 border-solid border-toby-outline-gray shadow-sm shadow-toby-outline-gray cursor-pointer"
         >
             <div id="tab-icon" className="flex-none w-15 h-15 mr-10 flex items-center justify-center">
                 <img 

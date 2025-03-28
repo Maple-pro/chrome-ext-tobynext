@@ -111,6 +111,9 @@
 
 @theme {
   --spacing: 1px;
+  --color-toby-blue: #3C5CCE;
+  --color-toby-outline-gray: #DDDDF5;
+  --color-toby-bg-gray: #FAFAFA;
 }
 
 @layer utilities {

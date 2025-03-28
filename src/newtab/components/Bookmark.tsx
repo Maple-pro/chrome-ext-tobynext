@@ -33,7 +33,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
         <div 
             id="bookmark-container" 
             onClick={() => window.open(props.bookmark.url, "_blank")}
-            className="group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid border-[#DDDDF5] shadow-sm shadow-[#DDDDF5] flex flex-row items-center justify-between cursor-pointer"
+            className="group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid border-toby-outline-gray shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer"
         >
             <div id="bookmark-favicon" className="flex-none w-16 h-16 flex justify-center items-center mr-10">
                 <img

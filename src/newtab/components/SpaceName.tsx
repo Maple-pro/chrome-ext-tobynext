@@ -31,7 +31,7 @@ const SpaceName = (props: SpaceNameProps): JSX.Element => {
     }
 
     return (
-        <div id="space-name-panel" className="w-full h-50 flex-none flex items-center justify-between px-30 border-b-1 border-solid border-[#DDDDF5]">
+        <div id="space-name-panel" className="w-full h-50 flex-none flex items-center justify-between px-30 border-b-1 border-solid border-toby-outline-gray">
             <div id="space-name-container" className="flex flex-row items-center">
                 <div id="space-name" className="text-[18px]">
                     {props.space ? props.space.title : ""}
@@ -40,7 +40,7 @@ const SpaceName = (props: SpaceNameProps): JSX.Element => {
                     | {props.collections.length} collections
                 </div>
             </div>
-            <div id="add-collection-button" className="bg-[#3C5CCE] rounded-md text-[#FAFAFA] flex items-center justify-center cursor-pointer">
+            <div id="add-collection-button" className="bg-toby-blue rounded-md text-toby-bg-gray flex items-center justify-center cursor-pointer">
                 <div id="button-text" onClick={() => setIsNewCollectionModalOpen(true)} className="px-10 py-5 ">
                     + ADD COLLECTION 
                 </div>
