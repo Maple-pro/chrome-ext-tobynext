@@ -41,7 +41,7 @@ const SpaceName = (): JSX.Element => {
                 </div>
             </div>
 
-            <FolderCreateModal isOpen={isNewCollectionModalOpen} onClose={() => setIsNewCollectionModalOpen(false)} onCreate={handleCreateCollection} />
+            <FolderCreateModal hint="Create New Collection" isOpen={isNewCollectionModalOpen} onClose={() => setIsNewCollectionModalOpen(false)} onCreate={handleCreateCollection} />
         </div>
     );
 }

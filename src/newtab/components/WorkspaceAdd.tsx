@@ -28,7 +28,7 @@ const WorkspaceAdd = (): JSX.Element => {
         <div id="add-btns-container" className="mt-20 flex justify-center items-center">
             <img src={addIcon} onClick={() => setIsNewWorkspaceModalOpen(true)} className="w-24 h-24" />
 
-            <FolderCreateModal isOpen={isNewWorkspaceModalOpen} onClose={() => setIsNewWorkspaceModalOpen(false)} onCreate={handleCreateWorkspace} />
+            <FolderCreateModal hint="Create New Workspace" isOpen={isNewWorkspaceModalOpen} onClose={() => setIsNewWorkspaceModalOpen(false)} onCreate={handleCreateWorkspace} />
         </div>
 
     );

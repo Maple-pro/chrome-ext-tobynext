@@ -58,7 +58,7 @@ const Spaces = (): JSX.Element => {
                 ))}
             </div>
 
-            <FolderCreateModal isOpen={isNewSpaceModalOpen} onClose={() => setIsNewSpaceModalOpen(false)} onCreate={handleCreateSpace} />
+            <FolderCreateModal hint="Create New Space" isOpen={isNewSpaceModalOpen} onClose={() => setIsNewSpaceModalOpen(false)} onCreate={handleCreateSpace} />
         </div>
     );
 }
