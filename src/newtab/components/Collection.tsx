@@ -15,7 +15,7 @@ interface CollectionProps {
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
-    const {refreshCollections} = useNewTabContext();
+    const {refreshCollections, dragType} = useNewTabContext();
 
     const [bookmarks, setBookmarks] = useState<BookmarkTreeNode[]>([]);
     const [isExpanded, setIsExpanded] = useState(true);
@@ -29,6 +29,15 @@ const Collection = (props: CollectionProps): JSX.Element => {
         fetchSubBookmark(props.collection, setBookmarks);
         setNewTitle(props.collection.title);
     }, [props.collection]);
+
+    // clear isDragOver when drag is end
+    // when onDrop is handled by bookmark, then isDragOver state won't be cleared by onDrop of Collection
+    useEffect(() => {
+        if (dragType === "") {
+            setIsDragOver(false);
+        }
+    }, [dragType])
+
 
     const handleExpandToggle = () => {
         setIsExpanded(prevState => !prevState);
@@ -71,6 +80,9 @@ const Collection = (props: CollectionProps): JSX.Element => {
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
+        if (!isDragOver) {
+            setIsDragOver(true);
+        }
     };
 
     const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
@@ -82,12 +94,9 @@ const Collection = (props: CollectionProps): JSX.Element => {
 
     const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+            event.preventDefault();
             setIsDragOver(false);
         }
-    };
-    
-    const handleDragEnd = () => {
-        setIsDragOver(false);
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -131,7 +140,6 @@ const Collection = (props: CollectionProps): JSX.Element => {
             onDragEnter={handleDragEnter}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            onDragEnd={handleDragEnd}
             onDrop={handleDrop}
             className={`w-full grow-0 px-30 py-24 flex flex-col
                 ${isDragOver ? "border-1 border-solid border-toby-blue" : "border-b-1 border-solid border-toby-outline-gray"}`}

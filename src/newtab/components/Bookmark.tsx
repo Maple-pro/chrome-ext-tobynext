@@ -48,6 +48,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
 
     const handleDragLeave = (e: React.DragEvent) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            e.preventDefault();
             setIsDragOver(false);
         }
     };
@@ -60,8 +61,12 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
 
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
-        e.stopPropagation();
 
+        if (dragType === "tab") {
+            return;
+        }
+
+        e.stopPropagation();
         setIsDragOver(false);
         setIsDragging(false);
         const type = e.dataTransfer.getData("type");
