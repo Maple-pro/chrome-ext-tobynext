@@ -85,6 +85,10 @@ const Collection = (props: CollectionProps): JSX.Element => {
             setIsDragOver(false);
         }
     };
+    
+    const handleDragEnd = () => {
+        setIsDragOver(false);
+    };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -127,6 +131,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
             onDragEnter={handleDragEnter}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
+            onDragEnd={handleDragEnd}
             onDrop={handleDrop}
             className={`w-full grow-0 px-30 py-24 flex flex-col
                 ${isDragOver ? "border-1 border-solid border-toby-blue" : "border-b-1 border-solid border-toby-outline-gray"}`}
