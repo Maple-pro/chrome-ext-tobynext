@@ -2,6 +2,7 @@ import React, { JSX, useState } from "react";
 import deleteBookmarkIcon from "@assets/close-tab.svg";
 import editBookmarkIcon from "@assets/edit-bookmark.svg";
 import defaultFavicon from "@assets/default-fav-icon.svg";
+import { useNewTabContext } from "../context/NewTabContext";
 
 
 interface BookmarkProps {
@@ -10,6 +11,9 @@ interface BookmarkProps {
 
 const Bookmark = (props: BookmarkProps): JSX.Element => {
     const [isDeleted, setIsDeleted] = useState(false);
+    const [isDragOver, setIsDragOver] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const {refreshCollections, dragType, setDragType} = useNewTabContext();
 
     const handleDelete = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -22,8 +26,63 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     };
 
     const handleDragStart = (event: React.DragEvent) => {
+        setIsDragging(true);
         event.dataTransfer.setData("type", "bookmark");
         event.dataTransfer.setData("application/json", JSON.stringify(props.bookmark));
+        setDragType("bookmark");
+    };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        if (!isDragOver && dragType === "bookmark") {
+            setIsDragOver(true);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault(); 
+        if (!isDragOver && dragType === "bookmark") {
+            setIsDragOver(true);
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setIsDragOver(false);
+        }
+    };
+
+    const handleDragEnd = () => {
+        setIsDragOver(false);
+        setIsDragging(false);
+        setDragType("");
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setIsDragOver(false);
+        setIsDragging(false);
+        const type = e.dataTransfer.getData("type");
+        
+        if (type === "bookmark") {
+            const bookmarkData = e.dataTransfer.getData("application/json");
+            if (bookmarkData) {
+                const bookmark: BookmarkTreeNode = JSON.parse(bookmarkData);
+
+                if (bookmark.id === props.bookmark.id) {
+                    return;
+                }
+
+                chrome.bookmarks.move(bookmark.id, {
+                    parentId: props.bookmark.parentId,
+                    index: props.bookmark.index,
+                }, () => {
+                    refreshCollections();
+                })
+            }
+        }
     };
 
     if (isDeleted) {
@@ -39,10 +98,16 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
         <div 
             id="bookmark-container" 
             onClick={() => window.open(props.bookmark.url, "_blank")}
-            className={`group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer
-                "border-toby-outline-gray"`}
+            className={`group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer border-toby-outline-gray
+                ${isDragOver ? "border-t-2 border-t-toby-blue": ""}
+                ${isDragging ? "opacity-50": ""}`}
             draggable
             onDragStart={handleDragStart} 
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
         >
             <div id="bookmark-favicon" className="flex-none w-16 h-16 flex justify-center items-center mr-10">
                 <img

@@ -15,6 +15,8 @@ interface NewTabContextType {
     refreshWorkspaces: () => void;
     refreshSpaces: () => void;
     refreshCollections: () => void;
+    dragType: string,
+    setDragType: (dragType: string) => void;
 }
 
 const NewTabContext = createContext<NewTabContextType | undefined>(undefined);
@@ -39,6 +41,8 @@ export const NewTabProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [forceUpdateWorkspaces, setForceUpdateWorkspaces] = useState(0);
     const [forceUpdateSpaces, setForceUpdateSpaces] = useState(0);
     const [forceUpdateCollections, setForceUpdateCollections] = useState(0);
+
+    const [dragType, setDragType] = useState<string>("");
 
     // force refresh workspaces
     const refreshWorkspaces = () => {
@@ -139,6 +143,8 @@ export const NewTabProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 refreshWorkspaces,
                 refreshSpaces,
                 refreshCollections,
+                dragType,
+                setDragType,
             }}
         >
             {children}

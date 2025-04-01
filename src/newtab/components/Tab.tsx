@@ -1,12 +1,15 @@
 import React, { JSX } from "react";
 import defaultFavicon from "@assets/default-fav-icon.svg";
 import closeIcon from "@assets/close-tab.svg";
+import { useNewTabContext } from "../context/NewTabContext";
 
 interface TabProps {
     tab: ChromeTab,
 }
 
 const Tab = (props: TabProps): JSX.Element => {
+    const {setDragType} = useNewTabContext();
+
     const handleTabClick = () => {
         if (props.tab.windowId) {
             chrome.windows.update(props.tab.windowId, {focused: true}, () => {
@@ -27,7 +30,12 @@ const Tab = (props: TabProps): JSX.Element => {
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         event.dataTransfer.setData("type", "tab");
         event.dataTransfer.setData("application/json", JSON.stringify(props.tab));
-    }
+        setDragType("tab");
+    };
+
+    const handleDragEnd = () => {
+        setDragType("");
+    };
 
     return (
         <div
@@ -35,6 +43,7 @@ const Tab = (props: TabProps): JSX.Element => {
             onClick={handleTabClick}
             draggable
             onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
             className="group w-full h-35 my-5 py-5 px-10 flex flex-row items-center rounded-sm border-1 border-solid border-toby-outline-gray shadow-sm shadow-toby-outline-gray cursor-pointer"
         >
             <div id="tab-icon" className="flex-none w-15 h-15 mr-10 flex items-center justify-center">
