@@ -21,7 +21,14 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
         }
     };
 
-    if (isDeleted) return (<div />);
+    const handleDragStart = (event: React.DragEvent) => {
+        event.dataTransfer.setData("type", "bookmark");
+        event.dataTransfer.setData("application/json", JSON.stringify(props.bookmark));
+    };
+
+    if (isDeleted) {
+        return (<div />);
+    }
 
     const getFaviconUrl = (url: string) => {
         const domain = new URL(url).hostname;
@@ -32,7 +39,10 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
         <div 
             id="bookmark-container" 
             onClick={() => window.open(props.bookmark.url, "_blank")}
-            className="group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid border-toby-outline-gray shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer"
+            className={`group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer
+                "border-toby-outline-gray"`}
+            draggable
+            onDragStart={handleDragStart} 
         >
             <div id="bookmark-favicon" className="flex-none w-16 h-16 flex justify-center items-center mr-10">
                 <img

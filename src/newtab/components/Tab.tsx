@@ -25,6 +25,7 @@ const Tab = (props: TabProps): JSX.Element => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData("type", "tab");
         event.dataTransfer.setData("application/json", JSON.stringify(props.tab));
     }
 

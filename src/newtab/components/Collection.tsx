@@ -71,33 +71,60 @@ const Collection = (props: CollectionProps): JSX.Element => {
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
-        setIsDragOver(true);
     };
 
-    const handleDragLeave = () => {
-        setIsDragOver(false);
+    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        if (!isDragOver) {
+            setIsDragOver(true);
+        }
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+            setIsDragOver(false);
+        }
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         setIsDragOver(false);
-        const tabData = event.dataTransfer.getData("application/json");
-        if (tabData) {
-            const tab: chrome.tabs.Tab = JSON.parse(tabData);
+        const type = event.dataTransfer.getData("type");
 
-            chrome.bookmarks.create({
-                parentId: props.collection.id,
-                title: tab.title || "New Tab",
-                url: tab.url,
-            }, () => {
-                refreshCollections();
-            });
+        if (type === "tab") {
+            const tabData = event.dataTransfer.getData("application/json");
+            if (tabData) {
+                const tab: ChromeTab = JSON.parse(tabData);
+
+                chrome.bookmarks.create({
+                    parentId: props.collection.id,
+                    title: tab.title || "New Tab",
+                    url: tab.url,
+                }, () => {
+                    refreshCollections();
+                });
+            }
+        } else if (type == "bookmark") {
+            const bookmarkData = event.dataTransfer.getData("application/json");
+            if (bookmarkData) {
+                const bookmark: BookmarkTreeNode = JSON.parse(bookmarkData);
+                if (bookmark.parentId === props.collection.id) {
+                    return;
+                }
+
+                chrome.bookmarks.move(bookmark.id, {
+                    parentId: props.collection.id,
+                }, () => {
+                    refreshCollections();
+                });
+            }
         }
     };
 
     return (
         <div 
             id="collection-container" 
+            onDragEnter={handleDragEnter}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
