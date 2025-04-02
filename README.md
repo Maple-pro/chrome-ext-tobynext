@@ -14,11 +14,11 @@ Save & restore entire work sessions with just one click!
 ## 🎯 What is TobyNext?
 TobyNext is a browser extension designed to help you efficiently manage multiple tabs.
 
-- 💾 One-Click Save: Store all your open tabs as a workspace and resume later.
+💾 One-Click Save: Store all your open tabs as a workspace and resume later.
 
-- 🔄 One-Click Restore: Pick up right where you left off with a single click.
+🔄 One-Click Restore: Pick up right where you left off with a single click.
 
-- 📂 Organized Workspaces: Easily switch between different projects and tasks.
+📂 Organized Workspaces: Easily switch between different projects and tasks.
 
 ## 💡 Why Choose TobyNext?
 Compared to traditional bookmarks, TobyNext offers a more intuitive and efficient way to manage tabs:
