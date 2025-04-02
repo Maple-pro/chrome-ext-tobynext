@@ -2,6 +2,8 @@
 
 English | [中文](./README-cn.md)
 
+![example](./images/example.png)
+
 ## 🌟 Struggling with too many open tabs?
 You need multiple web pages for work, but managing them is a nightmare?
 
@@ -35,6 +37,9 @@ TobyNext does not store any of your data—all tabs are saved in the Chrome Book
 ✔ No extra sign-up needed, your data syncs seamlessly with your Chrome account.
 
 ✔ Local storage, fully secure, giving you full control over your information.
+
+## 🔄 Seamlessly Import from Toby
+If you're a Toby user, you can import your Toby data effortlessly via the import option in the bottom-left corner of TobyNext. Switch over smoothly without losing your saved sessions! 💼✨
 
 ---
 
