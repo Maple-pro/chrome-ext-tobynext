@@ -33,20 +33,8 @@ export default defineManifest({
     128: 'icon128.png',
   },
   permissions: ['tabs', 'storage', 'bookmarks'],
-  content_scripts: [
-    {
-      js: isDev
-        ? ['src/content/index.dev.tsx']
-        : ['src/content/index.prod.tsx'],
-      matches: ['<all_urls>'],
-    },
-  ],
-  web_accessible_resources: [
-    {
-      resources: ['icon16.png', 'icon32.png', 'icon48.png', 'icon128.png', 'assets/*'],
-      matches: ['<all_urls>'],
-    },
-  ],
+  content_scripts: [],
+  web_accessible_resources: [],
   chrome_url_overrides: {
     newtab: 'src/newtab/index.html'
   },

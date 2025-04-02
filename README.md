@@ -1,12 +1,35 @@
-# TobyNext
+# 📌 TobyNext - Manage Your Browser Tabs Smarter
 
-一个将浏览器书签展示到浏览器主页的插件。
+English | [中文](./README-cn.md)
 
-- 存储：Chrome 自带 bookmarks
-- 用途：
-  - 在主页以仿 toby 的方式展示 bookmarks
-  - 拖拽的方式将当前网页加入到指定 bookmarks
+## 🌟 Struggling with too many open tabs?
+You need multiple web pages for work, but managing them is a nightmare?
+Bookmarks feel too clunky, and you wish for a more efficient workspace management tool?
 
-![](https://maples31-blog.oss-cn-beijing.aliyuncs.com/img/image-20241121-7f730a-20241121123337.png)
+🚀 TobyNext transforms your New Tab Page into a productivity powerhouse!
+Save & restore entire work sessions with just one click!
 
-workspace1 -> space1 -> collection1 -> item1
+## 🎯 What is TobyNext?
+TobyNext is a browser extension designed to help you efficiently manage multiple tabs.
+
+- 💾 One-Click Save: Store all your open tabs as a workspace and resume later.
+
+- 🔄 One-Click Restore: Pick up right where you left off with a single click.
+
+- 📂 Organized Workspaces: Easily switch between different projects and tasks.
+
+## 💡 Why Choose TobyNext?
+Compared to traditional bookmarks, TobyNext offers a more intuitive and efficient way to manage tabs:
+✅ Bookmarks are for key websites, but TobyNext manages entire work sessions.
+✅ Drag & drop interface, keeping your tabs organized effortlessly.
+✅ Visual layout, making it easier to locate and restore workspaces.
+
+## 🔒 Secure & Sync Across Devices
+TobyNext does not store any of your data—all tabs are saved in the Chrome Bookmarks folder, ensuring privacy and security.
+✔ No extra sign-up needed, your data syncs seamlessly with your Chrome account.
+✔ Local storage, fully secure, giving you full control over your information.
+
+---
+
+💻 Try TobyNext today and take control of your tab chaos!
+👉 Install TobyNext
