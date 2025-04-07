@@ -7,7 +7,7 @@ const TobyImport = (): JSX.Element => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
-        <div id="import-btn-container" className="mt-auto flex justify-center items-center">
+        <div id="import-btn-container" className="mt-10 flex justify-center items-center">
             <img 
                 src={importIcon} 
                 onClick={() => setIsModalOpen(true)}
