@@ -3,6 +3,7 @@ import deleteBookmarkIcon from "@assets/close-tab.svg";
 import editBookmarkIcon from "@assets/edit-bookmark.svg";
 import defaultFavicon from "@assets/default-fav-icon.svg";
 import { useNewTabContext } from "../context/NewTabContext";
+import SingleTextModal from "../modals/SingleTextModal";
 
 
 interface BookmarkProps {
@@ -13,7 +14,21 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     const [isDeleted, setIsDeleted] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const {refresh, dragType, setDragType} = useNewTabContext();
+
+    const handleRename = (title: string) => {
+        chrome.bookmarks.update(props.bookmark.id, {title: title}, () => {
+            // refresh();
+            props.bookmark.title = title;
+            setIsRenameModalOpen(false);
+        });
+    };
+
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation(); 
+        setIsRenameModalOpen(true);
+    };
 
     const handleDelete = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -130,13 +145,24 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
                 {props.bookmark.url}
             </div>
             <div id="bookmark-button-group" className="flex-none flex flex-row invisible group-hover:visible">
-                <div id="edit-bookmark-button" className="w-16 h-16 ml-10 flex justify-center items-center">
+                <div id="edit-bookmark-button" onClick={handleEdit} className="w-16 h-16 ml-10 flex justify-center items-center">
                     <img src={editBookmarkIcon} />
                 </div>
                 <div id="delete-bookmark-button" onClick={handleDelete} className="w-16 h-16 ml-10 flex justify-center items-center">
                     <img src={deleteBookmarkIcon} />
                 </div>
             </div>
+
+            <SingleTextModal
+                title="Rename Bookmark"
+                inputLabel="Title"
+                placeHolder="Enter Title"
+                cancelBtnText="CANCEL"
+                okBtnText="RENAME"
+                isOpen={isRenameModalOpen}
+                onClose={() => setIsRenameModalOpen(false)}
+                onCreate={handleRename}
+            />
         </div>
     )
 }

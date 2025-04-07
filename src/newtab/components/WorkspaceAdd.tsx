@@ -1,6 +1,6 @@
 import React, { JSX, useState } from "react";
 import addIcon from "@assets/add-workspace.svg";
-import FolderCreateModal from "../modals/FolderCreateModal";
+import SingleTextModal from "../modals/SingleTextModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 
@@ -28,7 +28,16 @@ const WorkspaceAdd = (): JSX.Element => {
         <div id="add-btns-container" className="mt-20 flex justify-center items-center">
             <img src={addIcon} onClick={() => setIsNewWorkspaceModalOpen(true)} className="w-24 h-24" />
 
-            <FolderCreateModal hint="Create New Workspace" isOpen={isNewWorkspaceModalOpen} onClose={() => setIsNewWorkspaceModalOpen(false)} onCreate={handleCreateWorkspace} />
+            <SingleTextModal 
+                title="Create New Workspace"
+                inputLabel="Title"
+                placeHolder="Enter title"
+                cancelBtnText="CANCEL"
+                okBtnText="CREATE"
+                isOpen={isNewWorkspaceModalOpen} 
+                onClose={() => setIsNewWorkspaceModalOpen(false)} 
+                onCreate={handleCreateWorkspace} 
+            />
         </div>
 
     );

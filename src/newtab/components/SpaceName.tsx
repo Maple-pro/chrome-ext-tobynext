@@ -1,5 +1,5 @@
 import React, { JSX, useState } from "react";
-import FolderCreateModal from "../modals/FolderCreateModal";
+import SingleTextModal from "../modals/SingleTextModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 
@@ -41,7 +41,16 @@ const SpaceName = (): JSX.Element => {
                 </div>
             </div>
 
-            <FolderCreateModal hint="Create New Collection" isOpen={isNewCollectionModalOpen} onClose={() => setIsNewCollectionModalOpen(false)} onCreate={handleCreateCollection} />
+            <SingleTextModal
+                title="Create New Collection"
+                inputLabel="Title"
+                placeHolder="Enter title"
+                cancelBtnText="CANCEL"
+                okBtnText="CREATE"
+                isOpen={isNewCollectionModalOpen} 
+                onClose={() => setIsNewCollectionModalOpen(false)} 
+                onCreate={handleCreateCollection} 
+            />
         </div>
     );
 }

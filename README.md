@@ -2,6 +2,10 @@
 
 English | [中文](./README-cn.md)
 
+👉 Install [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)
+
+👉 [Documentation](https://sites.maples31.com/tobynext/)
+
 ![example](./images/example.png)
 
 ## 🌟 Struggling with too many open tabs?
@@ -45,4 +49,4 @@ If you're a Toby user, you can import your Toby data effortlessly via the import
 
 💻 Try TobyNext today and take control of your tab chaos!
 
-👉 Install TobyNext
+👉 Install [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)

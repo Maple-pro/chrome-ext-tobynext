@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from "react";
 import addSpaceIcon from "@assets/add-space.svg";
 import folderIcon from "@assets/folder.svg";
 import selectedFolderIcon from '@assets/folder-selected.svg';
-import FolderCreateModal from "../modals/FolderCreateModal";
+import SingleTextModal from "../modals/SingleTextModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
 
@@ -98,7 +98,16 @@ const Spaces = (): JSX.Element => {
                 ))}
             </div>
 
-            <FolderCreateModal hint="Create New Space" isOpen={isNewSpaceModalOpen} onClose={() => setIsNewSpaceModalOpen(false)} onCreate={handleCreateSpace} />
+            <SingleTextModal 
+                title="Create New Space" 
+                inputLabel="Title" 
+                placeHolder="Enter title" 
+                cancelBtnText="CANCEL" 
+                okBtnText="CREATE" 
+                isOpen={isNewSpaceModalOpen} 
+                onClose={() => setIsNewSpaceModalOpen(false)} 
+                onCreate={handleCreateSpace} 
+            />
         </div>
     );
 }

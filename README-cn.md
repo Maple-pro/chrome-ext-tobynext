@@ -2,6 +2,10 @@
 
 [English](./README.md) | 中文
 
+👉 安装 [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)
+
+👉 [官方文档](https://sites.maples31.com/tobynext/)
+
 ![example](./images/example.png)
 
 ## 🌟 你是否常常因为打开太多标签页而头疼？
@@ -46,4 +50,4 @@ TobyNext 不会存储你的任何数据，所有标签页都保存在 Chrome 书
 
 💻 立即体验 TobyNext，告别标签页混乱，提升你的工作效率！
 
-👉 安装 TobyNext
+👉 安装 [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)
