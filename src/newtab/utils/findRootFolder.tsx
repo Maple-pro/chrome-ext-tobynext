@@ -21,15 +21,7 @@ const findRootFolder = async (): Promise<BookmarkTreeNode> => {
 }
 
 const createRootFolder = async (): Promise<BookmarkTreeNode> => {
-    var rootFolder: BookmarkTreeNode | undefined;
-    chrome.bookmarks.create(
-        {"parentId": bookmarkBarId, "title": rootFolderTitle},
-        function(newFolder) {
-            rootFolder = newFolder;
-        }
-    )
-
-    return rootFolder!;
+    return await chrome.bookmarks.create({ parentId: bookmarkBarId, title: rootFolderTitle})
 }
 
 export default findRootFolder;

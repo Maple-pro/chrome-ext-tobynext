@@ -6,7 +6,7 @@ import { useNewTabContext } from "../context/NewTabContext";
 
 const WorkspaceAdd = (): JSX.Element => {
     const [isNewWorkspaceModalOpen, setIsNewWorkspaceModalOpen] = useState(false);
-    const {rootFolder, setCurrentWorkspace, refreshWorkspaces} = useNewTabContext();
+    const {rootFolder, setCurrentWorkspace, refresh: refreshWorkspaces} = useNewTabContext();
 
     const handleCreateWorkspace = (title: string) => {
         if (rootFolder) {

@@ -1,10 +1,10 @@
-export default async (folder: BookmarkTreeNode, setSubFolder: Function) => {
+export default async (folder: BookmarkTreeNode): Promise<BookmarkTreeNode[]> => {
     if (!folder || folder.url) {
         if (folder) {
             console.error("Bookmark is not folder: " + folder.title);
         }
         Promise.resolve();
-        return;
+        return [];
     }
 
     const children = await new Promise<BookmarkTreeNode[]>((resolve) => {
@@ -18,5 +18,5 @@ export default async (folder: BookmarkTreeNode, setSubFolder: Function) => {
         }
     }
 
-    setSubFolder(subFolders);
+    return subFolders;
 }

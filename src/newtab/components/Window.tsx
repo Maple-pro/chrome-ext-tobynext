@@ -16,7 +16,7 @@ const Window = (props: WindowProps): JSX.Element => {
     const [tabs, setTabs] = useState<ChromeTab[]>([]);
     const [filteredTabs, setFilteredTabs] = useState<ChromeTab[]>([]);
     const [isExpanded, setIsExpanded] = useState(true);
-    const {refreshCollections, currentSpace} = useNewTabContext();
+    const {refresh, currentSpace} = useNewTabContext();
 
     useEffect(() => {
         if (props.window && props.window.id) {
@@ -76,7 +76,7 @@ const Window = (props: WindowProps): JSX.Element => {
             }
         }
 
-        refreshCollections();
+        refresh();
     };
 
     return (

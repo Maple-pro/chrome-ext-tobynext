@@ -9,7 +9,7 @@ import { useNewTabContext } from "../context/NewTabContext";
 const Spaces = (): JSX.Element => {
     const {spaces} = useNewTabContext();
     const [isNewSpaceModalOpen, setIsNewSpaceModalOpen] = useState(false);
-    const {currentWorkspace, currentSpace, setCurrentSpace, refreshSpaces} = useNewTabContext();
+    const {currentWorkspace, currentSpace, setCurrentSpace, refresh} = useNewTabContext();
     const [draggedBookmark, setDraggedBookmark] = useState<BookmarkTreeNode | null>(null);
     const [dragOverBookmark, setDragOverBookmark] = useState<BookmarkTreeNode | null>(null);
 
@@ -26,7 +26,7 @@ const Spaces = (): JSX.Element => {
                 },
                 (newSpace) => {
                     setCurrentSpace(newSpace);
-                    refreshSpaces();
+                    refresh();
                     setIsNewSpaceModalOpen(false);
                 }
             );
@@ -56,7 +56,7 @@ const Spaces = (): JSX.Element => {
             parentId: draggedBookmark.parentId,
             index: targetBookmark.index,
         }, () => {
-            refreshSpaces();
+            refresh();
         });
     };
 

@@ -13,7 +13,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     const [isDeleted, setIsDeleted] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const {refreshCollections, dragType, setDragType} = useNewTabContext();
+    const {refresh, dragType, setDragType} = useNewTabContext();
 
     const handleDelete = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -84,7 +84,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
                     parentId: props.bookmark.parentId,
                     index: props.bookmark.index,
                 }, () => {
-                    refreshCollections();
+                    refresh();
                 })
             }
         }

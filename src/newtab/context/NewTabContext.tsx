@@ -3,6 +3,9 @@ import { useStoredState } from "../hooks/useStoredState";
 import findRootFolder from "../utils/findRootFolder";
 import fetchSubFolder from "../utils/fetchSubFolder";
 
+const DEFAULT_WORKSPACE_TITLE = "Toby";
+const DEFAULT_SPACE_TITLE = "My Collection";
+
 interface NewTabContextType {
     rootFolder?: BookmarkTreeNode;
     currentWorkspace?: BookmarkTreeNode;
@@ -12,9 +15,7 @@ interface NewTabContextType {
     workspaces: BookmarkTreeNode[];
     spaces: BookmarkTreeNode[];
     collections: BookmarkTreeNode[];
-    refreshWorkspaces: () => void;
-    refreshSpaces: () => void;
-    refreshCollections: () => void;
+    refresh: () => void;
     dragType: string,
     setDragType: (dragType: string) => void;
 }
@@ -38,96 +39,126 @@ export const NewTabProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [spaces, setSpaces] = useState<BookmarkTreeNode[]>([]);
     const [collections, setCollections] = useState<BookmarkTreeNode[]>([]);
 
-    const [forceUpdateWorkspaces, setForceUpdateWorkspaces] = useState(0);
-    const [forceUpdateSpaces, setForceUpdateSpaces] = useState(0);
-    const [forceUpdateCollections, setForceUpdateCollections] = useState(0);
+    const [forceUpdate, setForceUpdate] = useState(0);
 
     const [dragType, setDragType] = useState<string>("");
 
-    // force refresh workspaces
-    const refreshWorkspaces = () => {
-        setForceUpdateWorkspaces(prev => prev + 1);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // force refresh
+    const refresh = () => {
+        setForceUpdate(prev => prev + 1);
     };
 
-    // force refresh spaces
-    const refreshSpaces = () => {
-        setForceUpdateSpaces(prev => prev + 1);
-    };
-
-    // force refresh collections
-    const refreshCollections = () => {
-        setForceUpdateCollections(prev => prev + 1);
-    };
-
-    // get rootFolder
+    // init: rootFolder, workspaces, spaces, collections, currentWorkspace, currentSpace
     useEffect(() => {
-        const fetchRootFolder = async () => {
-            const folder = await findRootFolder();
-            setRootFolder(folder);
+        setIsInitialized(false);
+
+        const initialize = async () => {
+            // 1. find or create rootFolder
+            const rootFolderTemp = await findRootFolder();
+            setRootFolder(rootFolderTemp);
+
+            // 2. find or create workspaces
+            let workspacesTemp = await fetchSubFolder(rootFolderTemp);
+            if (workspacesTemp.length === 0) {
+                await chrome.bookmarks.create({ parentId: rootFolderTemp.id, title: DEFAULT_WORKSPACE_TITLE });
+                workspacesTemp = await fetchSubFolder(rootFolderTemp);
+            }
+            setWorkspaces(workspacesTemp);
+
+            // 3. set currentWorkspace
+            let currentWorkspaceTemp = currentWorkspace;
+            if (
+                !isCurrentWorkspaceLoaded || 
+                !currentWorkspaceTemp || 
+                currentWorkspaceTemp.parentId !== rootFolderTemp.id
+            ) {
+                currentWorkspaceTemp = workspacesTemp[0];
+                setCurrentWorkspace(currentWorkspaceTemp);
+                console.log("Use default workspace: ", currentWorkspaceTemp.title);
+            }
+
+            // 4. find or create spaces
+            let spacesTemp = await fetchSubFolder(currentWorkspaceTemp);
+            if (spacesTemp.length === 0) {
+                await chrome.bookmarks.create({ parentId: currentWorkspaceTemp.id, title: DEFAULT_SPACE_TITLE });
+                spacesTemp = await fetchSubFolder(currentWorkspaceTemp);
+            }
+            setSpaces(spacesTemp);
+
+            // 5. set currentSpace
+            let currentSpaceTemp = currentSpace;
+            if (
+                !isCurrentSpaceLoaded ||
+                !currentSpaceTemp ||
+                currentSpaceTemp.parentId !== currentWorkspaceTemp.id
+            ) {
+                currentSpaceTemp = spacesTemp[0];
+                setCurrentSpace(currentSpaceTemp);
+                console.log("Use default space: ", currentSpaceTemp.title);
+            }
+
+            // 6. find collections
+            if (currentSpaceTemp) {
+                const collectionsTemp = await fetchSubFolder(currentSpaceTemp);
+                setCollections(collectionsTemp);
+            } else {
+                setCollections([]);
+            }
+
+            setIsInitialized(true);
         };
 
-        fetchRootFolder();
-    }, []);
-
-    // get workspaces
-    useEffect(() => {
-        if (rootFolder) {
-            fetchSubFolder(rootFolder, setWorkspaces);
+        if (isCurrentSpaceLoaded && isCurrentSpaceLoaded) {
+            initialize();
         }
-    }, [rootFolder, forceUpdateWorkspaces]);
+    }, [isCurrentWorkspaceLoaded, isCurrentSpaceLoaded, forceUpdate]);
 
-    // get spaces
+    // click workspace to update spaces
     useEffect(() => {
-        if (currentWorkspace) {
-            fetchSubFolder(currentWorkspace, setSpaces);
-        }
-    }, [currentWorkspace, forceUpdateSpaces]);
-
-    // get collections
-    useEffect(() => {
-        if (currentSpace) {
-            fetchSubFolder(currentSpace, setCollections);
-        } else {
-            setCollections([]);
-        }
-    }, [currentSpace, forceUpdateCollections]);
-
-    // set currentWorkspace
-    // When `props.currentWorkspace` is undefined and workspaces is not empty, use default workspace
-    useEffect(() => {
-        if (!isCurrentWorkspaceLoaded && workspaces.length > 0 && !currentWorkspace) {
-            setCurrentWorkspace(workspaces[0]); 
-            console.log("Use default workspace: " + workspaces[0].title);
-        }
-    }, [isCurrentWorkspaceLoaded, workspaces, currentWorkspace]);
-
-    // set currentSpace
-    // When `props.currentSpace` is undefined or `props.currentSpace.parentId` is not `props.currentWorkspace`
-    // use default spaces
-    useEffect(() => {
-        if (!isCurrentWorkspaceLoaded || !isCurrentSpaceLoaded) {
+        if (!isInitialized) {
             return;
         }
 
-        if (!currentWorkspace) {
-            setCurrentSpace(undefined);
-            console.log("Use default space: undefined for no currentWorkspace");
-        } else if (!currentSpace || currentSpace.parentId !== currentWorkspace.id) {
-            // use default spaces
-            if (spaces.length == 0) {
-                setCurrentSpace(undefined);
-                console.log("Use default space: undefined for no spaces");
-            } else {
-                if (spaces[0].parentId === currentWorkspace.id) {
-                    setCurrentSpace(spaces[0]);
-                    console.log("Use default space: " + spaces[0].title);
-                } else {
-                    setCurrentSpace(undefined);
-                    console.log("Use default space: undefined");
-                }
+        const updateSpaces = async () => {
+            if (!currentWorkspace) {
+                return;
             }
+
+            let fetchedSpaces = await fetchSubFolder(currentWorkspace);
+            if (fetchedSpaces.length === 0) {
+                await chrome.bookmarks.create({ parentId: currentWorkspace.id, title: DEFAULT_SPACE_TITLE });
+                fetchedSpaces = await fetchSubFolder(currentWorkspace);
+            }
+            setSpaces(fetchedSpaces);
+
+            if (!currentSpace || currentSpace.parentId !== currentWorkspace.id) {
+                setCurrentSpace(fetchedSpaces[0]);
+            }
+        };
+
+        updateSpaces();
+    }, [currentWorkspace]);
+
+    // click space to update collections
+    useEffect(() => {
+        if (!isInitialized) {
+            return;
         }
-    }, [isCurrentWorkspaceLoaded, isCurrentSpaceLoaded, spaces, currentSpace, setCurrentSpace])
+
+        const updateCollections = async () => {
+            if (!currentSpace) {
+                setCollections([]);
+                return;
+            }
+
+            const fetchedCollections = await fetchSubFolder(currentSpace);
+            setCollections(fetchedCollections);
+        };
+
+        updateCollections();
+    }, [currentSpace]);
 
     return (
         <NewTabContext.Provider
@@ -140,9 +171,7 @@ export const NewTabProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 workspaces,
                 spaces,
                 collections,
-                refreshWorkspaces,
-                refreshSpaces,
-                refreshCollections,
+                refresh,
                 dragType,
                 setDragType,
             }}

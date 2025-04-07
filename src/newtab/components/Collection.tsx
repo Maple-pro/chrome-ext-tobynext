@@ -15,7 +15,7 @@ interface CollectionProps {
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
-    const {refreshCollections, dragType} = useNewTabContext();
+    const {refresh, dragType} = useNewTabContext();
 
     const [bookmarks, setBookmarks] = useState<BookmarkTreeNode[]>([]);
     const [isExpanded, setIsExpanded] = useState(true);
@@ -55,7 +55,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
     
     const handleDeleteCollection = async () => {
         await chrome.bookmarks.removeTree(props.collection.id);
-        refreshCollections();
+        refresh();
     }
 
     const handleCollectionTitleClick = () => {
@@ -114,7 +114,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
                     title: tab.title || "New Tab",
                     url: tab.url,
                 }, () => {
-                    refreshCollections();
+                    refresh();
                 });
             }
         } else if (type == "bookmark") {
@@ -128,7 +128,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
                 chrome.bookmarks.move(bookmark.id, {
                     parentId: props.collection.id,
                 }, () => {
-                    refreshCollections();
+                    refresh();
                 });
             }
         }

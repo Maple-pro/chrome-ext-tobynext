@@ -9,7 +9,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
     const [file, setFile] = useState<File | null>(null);
     const [dragging, setDragging] = useState(false);
     const [loading, setLoading] = useState(false);
-    const {currentWorkspace, refreshSpaces, refreshCollections, setCurrentSpace} = useNewTabContext();
+    const {currentWorkspace, refresh, setCurrentSpace} = useNewTabContext();
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -96,8 +96,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
             console.error("Error importing bookmarks: ", error);
         } finally {
             setLoading(false);
-            refreshSpaces();
-            refreshCollections();
+            refresh();
             setCurrentSpace(defaultSpace);
         }
 

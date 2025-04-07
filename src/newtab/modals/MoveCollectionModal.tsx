@@ -20,11 +20,16 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({ isOpen, onClo
 
     // get spaces
     useEffect(() => {
-        if (selectedWorkspace) {
-            fetchSubFolder(selectedWorkspace, setSpaces);
-        } else {
-            setSpaces([]);
+        const fetchSpaces = async () => {
+            if (selectedWorkspace) {
+                const folders = await fetchSubFolder(selectedWorkspace);
+                setSpaces(folders);
+            } else {
+                setSpaces([]);
+            }
         }
+
+        fetchSpaces();
     }, [selectedWorkspace])
 
     const handleMove = (e: React.MouseEvent) => {

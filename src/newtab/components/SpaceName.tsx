@@ -5,7 +5,7 @@ import { useNewTabContext } from "../context/NewTabContext";
 
 const SpaceName = (): JSX.Element => {
     const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] = useState(false);
-    const {currentSpace, collections, refreshCollections} = useNewTabContext();
+    const {currentSpace, collections, refresh} = useNewTabContext();
 
     const handleCreateCollection = (title: string) => {
         if (!currentSpace) {
@@ -19,7 +19,7 @@ const SpaceName = (): JSX.Element => {
                 index: 0,
             },
             () => {
-                refreshCollections();
+                refresh();
                 setIsNewCollectionModalOpen(false);
             }
         )
