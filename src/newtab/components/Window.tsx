@@ -6,6 +6,7 @@ import saveWindowIcon from '@assets/save-window.svg';
 
 import { useNewTabContext } from '../context/NewTabContext';
 import Tab from './Tab';
+import IconButton from './IconButton';
 
 interface WindowProps {
   window: ChromeWindow;
@@ -74,52 +75,24 @@ const Window = (props: WindowProps): JSX.Element => {
   };
 
   return (
-    <div
-      id='window-container'
-      className='border-toby-outline-gray shadow-toby-outline-gray my-5 flex w-full flex-none flex-col items-center rounded-sm border-1 border-solid px-12 py-10 shadow-xs'
-    >
-      <div
-        id='window-title-group'
-        className='mb-5 flex w-full flex-row items-center justify-between'
-      >
-        <div id='window-title-group' className='flex flex-row items-center'>
-          <div id='window-title' className='mr-5 text-[12px] text-[#474759]'>
-            Window {props.index}
-          </div>
-          <div
-            id='window-expand-button'
-            className={`flex h-12 w-12 flex-none cursor-pointer items-center justify-center transition-transform duration-300 ${isExpanded ? '' : 'rotate-[-90deg]'}`}
-            onClick={handleExpandToggel}
-          >
-            <img src={expandWindowIcon} />
-          </div>
+    <section id='window-container' className='window-card'>
+      <div id='window-title-group' className='window-header'>
+        <div className='window-title-group'>
+          <IconButton id='window-expand-button' icon={expandWindowIcon} label={isExpanded ? 'Collapse window' : 'Expand window'}
+            aria-expanded={isExpanded} className={isExpanded ? '' : 'is-collapsed'} onClick={handleExpandToggel} />
+          <h3 id='window-title'>Window {props.index}</h3><span className='count-badge'>{filteredTabs.length}</span>
         </div>
-        <div id='window-buttons-group' className='flex flex-row items-center'>
-          <div
-            id='save-window-button'
-            onClick={handleSaveWindow}
-            className='mx-5 flex h-12 w-12 flex-none cursor-pointer items-center justify-center'
-          >
-            <img src={saveWindowIcon} />
-          </div>
-          <div
-            id='close-window-button'
-            onClick={handleCloseWindow}
-            className='mx-5 flex h-12 w-12 flex-none cursor-pointer items-center justify-center'
-          >
-            <img src={closeWindowIcon} />
-          </div>
+        <div id='window-buttons-group' className='window-actions'>
+          <IconButton id='save-window-button' icon={saveWindowIcon} label='Save window as collection'
+            disabled={!currentSpace || !filteredTabs.length} onClick={handleSaveWindow} />
+          <IconButton id='close-window-button' icon={closeWindowIcon} label='Close window' danger onClick={handleCloseWindow} />
         </div>
       </div>
-      {isExpanded && (
-        <div id='tab-group' className='flex w-full flex-col items-center'>
-          {filteredTabs.map((tab) => (
-            <Tab key={tab.id} tab={tab} />
-          ))}
-        </div>
-      )}
-    </div>
+      {isExpanded && <div id='tab-group' className='tab-list'>
+        {filteredTabs.length ? filteredTabs.map(tab => <Tab key={tab.id} tab={tab} />)
+          : <p className='window-empty'>No tabs to save in this window.</p>}
+      </div>}
+    </section>
   );
 };
-
 export default Window;

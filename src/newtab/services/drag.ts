@@ -1,7 +1,7 @@
 import type { BookmarkTreeNode } from '@/types';
 
 export type DragItem =
-  | { type: 'bookmark' | 'space'; id: string }
+  | { type: 'bookmark' | 'space' | 'collection'; id: string }
   | { type: 'tab'; id: number };
 export const DRAG_MIME = 'application/x-tobynext-item';
 let active: DragItem | undefined;
@@ -61,9 +61,11 @@ export async function dropItem(
   } else {
     const [source] = await chrome.bookmarks.get(item.id);
     if (item.type === 'space' && source.parentId !== parentId) return;
+    const moveOptions = target
+      ? { parentId, index: insertionIndex(target, after) }
+      : { parentId, ...(item.type === 'collection' ? { index: 0 } : {}) };
     await chrome.bookmarks.move(source.id, {
-      parentId,
-      ...(target ? { index: insertionIndex(target, after) } : {}),
+      ...moveOptions,
     });
   }
 }

@@ -63,54 +63,16 @@ const SingleTextModal: React.FC<SingleTextModalProps> = ({
       }}
       label={title}
     >
-      <div
-        id='new-workspace-dialog'
-        className='bg-toby-bg-gray relative flex w-300 flex-col items-start justify-between rounded-md px-24 py-12 opacity-100 shadow-md'
-      >
-        <div
-          id='new-workspace-dialog-title'
-          className='mb-15 text-[18px] font-bold'
-        >
-          {title}
-        </div>
-        <div id='new-workspace-dialog-input-hint' className='mb-10 text-[14px]'>
-          {inputLabel}
-        </div>
-        <input
-          type='text'
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          aria-label={inputLabel}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') void handleCreate();
-          }}
-          autoFocus
-          className='focus:ring-toby-blue h-25 w-full flex-0 rounded-md border border-gray-300 px-4 py-10 text-[14px] focus:ring-2 focus:outline-none'
-          placeholder={placeHolder}
-        />
-        {error && <p role='alert'>{error}</p>}
-        <div
-          id='new-workspace-dialog-buttons'
-          className='mt-15 flex w-full flex-row items-center justify-around'
-        >
-          <button
-            type='button'
-            disabled={saving}
-            id='new-workspace-dialog-cancel'
-            onClick={handleClose}
-            className='text-toby-blue mr-5 flex basis-1/2 cursor-pointer items-center justify-center rounded-md px-10 py-5 font-bold'
-          >
-            {cancelBtnText}
-          </button>
-          <button
-            type='button'
-            disabled={saving || !value.trim()}
-            id='new-workspace-dialog-confirm'
-            onClick={handleCreate}
-            className={`flex basis-1/2 cursor-pointer items-center justify-center rounded-md px-10 py-5 font-bold outline-1 ${value.trim() ? 'bg-toby-blue text-toby-bg-gray outline-0' : 'text-gray-300 outline-gray-300'} `}
-          >
-            {okBtnText}
-          </button>
+      <div id='new-workspace-dialog' className='modal-content'>
+        <h2 id='new-workspace-dialog-title' className='modal-title'>{title}</h2>
+        <label id='new-workspace-dialog-input-hint' className='modal-label' htmlFor='modal-title-input'>{inputLabel}</label>
+        <input id='modal-title-input' type='text' value={value} onChange={event => setValue(event.target.value)}
+          aria-label={inputLabel} onKeyDown={event => { if (event.key === 'Enter') void handleCreate(); }}
+          autoFocus className='modal-input' placeholder={placeHolder} />
+        {error && <p className='inline-error' role='alert'>{error}</p>}
+        <div id='new-workspace-dialog-buttons' className='modal-actions'>
+          <button type='button' disabled={saving} id='new-workspace-dialog-cancel' onClick={handleClose} className='secondary-button'>{cancelBtnText}</button>
+          <button type='button' disabled={saving || !value.trim()} id='new-workspace-dialog-confirm' onClick={handleCreate} className='primary-button'>{saving ? 'Saving…' : okBtnText}</button>
         </div>
       </div>
     </Modal>

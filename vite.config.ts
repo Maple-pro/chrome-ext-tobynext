@@ -7,8 +7,16 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 import manifest from './src/manifest';
 
+const devPort = 5173;
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    // CRXJS needs an explicit port when generating the extension HMR client.
+    port: devPort,
+    strictPort: true,
+    hmr: { port: devPort },
+  },
   plugins: [
     react(),
     tsconfigPaths(),

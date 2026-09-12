@@ -1,4 +1,4 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import type { BookmarkTreeNode } from '@/types';
 import deleteBookmarkIcon from '@assets/close-tab.svg';
 import defaultFavicon from '@assets/default-fav-icon.svg';
@@ -8,6 +8,7 @@ import { useNewTabContext } from '../context/NewTabContext';
 import { useDragSource, useDropTarget } from '../hooks/useDrag';
 import SingleTextModal from '../modals/SingleTextModal';
 import { canClick } from '../services/drag';
+import IconButton from './IconButton';
 
 interface BookmarkProps {
   bookmark: BookmarkTreeNode;
@@ -25,6 +26,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     props.bookmark.id
   );
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [faviconIndex, setFaviconIndex] = useState(0);
   const { refresh } = useNewTabContext();
 
   const handleRename = async (title: string) => {
@@ -48,86 +50,86 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     }
   };
 
+  useEffect(() => setFaviconIndex(0), [props.bookmark.url]);
+
   if (isDeleted) {
     return <div />;
   }
 
-  const getFaviconUrl = (url: string) => {
-    const favicon = new URL(chrome.runtime.getURL('/_favicon/'));
-    favicon.searchParams.set('pageUrl', url);
-    favicon.searchParams.set('size', '32');
-    return favicon.href;
+  const getFaviconCandidates = (url: string) => {
+    try {
+      const pageUrl = new URL(url);
+      const chromeFavicon = new URL(chrome.runtime.getURL('_favicon/'));
+      chromeFavicon.searchParams.set('pageUrl', pageUrl.href);
+      chromeFavicon.searchParams.set('size', '32');
+      return [chromeFavicon.href, new URL('/favicon.ico', pageUrl.origin).href];
+    } catch {
+      return [];
+    }
   };
+  const faviconCandidates = props.bookmark.url
+    ? getFaviconCandidates(props.bookmark.url)
+    : [];
+  const faviconSrc = faviconCandidates[faviconIndex] || defaultFavicon;
 
   return (
     <div
       id='bookmark-container'
       data-bookmark-id={props.bookmark.id}
-      onClick={() => {
-        if (canClick()) window.open(props.bookmark.url, '_blank', 'noopener');
-      }}
-      className={`group shadow-toby-outline-gray border-toby-outline-gray my-10 flex h-40 w-full cursor-pointer flex-row items-center justify-between rounded-md border-1 border-solid px-20 py-10 shadow-sm ${dropClass} ${isDragging ? 'opacity-50' : ''}`}
+      className={`bookmark-row ${dropClass} ${isDragging ? 'is-dragging' : ''}`}
       {...sourceProps}
       {...targetProps}
-      title={error || props.bookmark.title}
+      title={error || props.bookmark.url}
     >
-      <div
-        id='bookmark-favicon'
-        className='mr-10 flex h-16 w-16 flex-none items-center justify-center'
-      >
+      <span className='drag-grip' aria-hidden='true'>
+        ⠿
+      </span>
+      <div id='bookmark-favicon' className='favicon-tile'>
         <img
-          src={
-            props.bookmark.url
-              ? getFaviconUrl(props.bookmark.url)
-              : defaultFavicon
-          }
-          onError={(e) => {
-            e.currentTarget.src = defaultFavicon;
-          }}
-          className='h-full w-full object-contain'
+          alt=''
+          draggable={false}
+          src={faviconSrc}
+          onError={() => setFaviconIndex((index) => index + 1)}
         />
       </div>
-      <div
-        id='bookmark-title'
-        className='shrink-1 grow-0 basis-1/2 truncate pr-20 text-[14px]'
+      <a
+        className='bookmark-link'
+        href={props.bookmark.url}
+        target='_blank'
+        rel='noopener noreferrer'
+        draggable={false}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (!canClick()) event.preventDefault();
+        }}
       >
-        {props.bookmark.title}
-      </div>
-      <div
-        id='bookmark-url'
-        className='shrink-4 grow-0 basis-1/2 truncate text-[12px] text-[#474759]'
-      >
-        {props.bookmark.url}
-      </div>
-      <div
-        id='bookmark-button-group'
-        className='invisible flex flex-none flex-row group-hover:visible'
-      >
-        <button
-          type='button'
-          aria-label='Rename bookmark'
+        <span id='bookmark-title' className='bookmark-title'>
+          {props.bookmark.title || props.bookmark.url}
+        </span>
+        <span id='bookmark-url' className='bookmark-url'>
+          {props.bookmark.url}
+        </span>
+      </a>
+      <div id='bookmark-button-group' className='bookmark-actions'>
+        <IconButton
           id='edit-bookmark-button'
+          icon={editBookmarkIcon}
+          label='Rename bookmark'
           onClick={handleEdit}
-          className='ml-10 flex h-16 w-16 items-center justify-center'
-        >
-          <img src={editBookmarkIcon} />
-        </button>
-        <button
-          type='button'
-          aria-label='Delete bookmark'
+        />
+        <IconButton
           id='delete-bookmark-button'
+          icon={deleteBookmarkIcon}
+          label='Delete bookmark'
+          danger
           onClick={handleDelete}
-          className='ml-10 flex h-16 w-16 items-center justify-center'
-        >
-          <img src={deleteBookmarkIcon} />
-        </button>
+        />
       </div>
-
       <SingleTextModal
         title='Rename Bookmark'
         initialValue={props.bookmark.title}
         inputLabel='Title'
-        placeHolder='Enter Title'
+        placeHolder='Enter a title'
         cancelBtnText='CANCEL'
         okBtnText='RENAME'
         isOpen={isRenameModalOpen}
@@ -137,5 +139,4 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
     </div>
   );
 };
-
 export default Bookmark;

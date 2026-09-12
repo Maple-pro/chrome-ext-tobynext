@@ -4,6 +4,7 @@ import addSpaceIcon from '@assets/add-space.svg';
 import { useNewTabContext } from '../context/NewTabContext';
 import SingleTextModal from '../modals/SingleTextModal';
 import SpaceRow from './SpaceRow';
+import IconButton from './IconButton';
 
 const Spaces = (): JSX.Element => {
   const { spaces } = useNewTabContext();
@@ -29,22 +30,16 @@ const Spaces = (): JSX.Element => {
   return (
     <div
       id='space-container'
-      className='no-scrollbar flex flex-col overflow-y-auto px-12 py-16'
+      className='spaces-section'
     >
-      <div id='space-title-container' className='flex flex-row justify-between'>
-        <div id='title' className='text-[12px] font-bold'>
+      <div id='space-title-container' className='section-heading'>
+        <div id='title' className='eyebrow'>
           SPACES
         </div>
-        <div
-          id='add-space'
-          onClick={() => setIsNewSpaceModalOpen(true)}
-          className='cursor-pointer'
-        >
-          <img src={addSpaceIcon} className='h-15 w-15' />
-        </div>
+        <IconButton id='add-space' icon={addSpaceIcon} label='Create space' onClick={() => setIsNewSpaceModalOpen(true)} />
       </div>
 
-      <div id='spaces-container' className='flex flex-col overflow-auto pt-15'>
+      <div id='spaces-container' className='space-list'>
         {spaces.map((space) => (
           <SpaceRow key={space.id} space={space} />
         ))}

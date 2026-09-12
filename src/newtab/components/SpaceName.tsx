@@ -26,33 +26,18 @@ const SpaceName = (): JSX.Element => {
     }
 
     return (
-        <div id="space-name-panel" className="w-full h-50 flex-none flex items-center justify-between px-30 border-b-1 border-solid border-toby-outline-gray">
-            <div id="space-name-container" className="flex flex-row items-center">
-                <div id="space-name" className="text-[18px]">
-                    {currentSpace ? currentSpace.title : ""}
-                </div>
-                <div id="collection-number" className={`ml-20 text-[12px] text-[#70708C] ${currentSpace ? "visible" : "invisible"}`}>
-                    | {collections.length} collections
-                </div>
-            </div>
-            <div id="add-collection-button" className="bg-toby-blue rounded-md text-toby-bg-gray flex items-center justify-center cursor-pointer">
-                <div id="button-text" onClick={() => setIsNewCollectionModalOpen(true)} className="px-10 py-5 ">
-                    + ADD COLLECTION 
-                </div>
-            </div>
-
-            <SingleTextModal
-                title="Create New Collection"
-                inputLabel="Title"
-                placeHolder="Enter title"
-                cancelBtnText="CANCEL"
-                okBtnText="CREATE"
-                isOpen={isNewCollectionModalOpen} 
-                onClose={() => setIsNewCollectionModalOpen(false)} 
-                onCreate={handleCreateCollection} 
-            />
+      <header id='space-name-panel' className='space-heading'>
+        <div className='space-heading-copy'>
+          <span className='eyebrow'>YOUR LIBRARY</span>
+          <h1 id='space-name' title={currentSpace?.title}>{currentSpace?.title || 'Your collections'}</h1>
+          <p><span id='collection-number'>{collections.length} {collections.length === 1 ? 'collection' : 'collections'}</span><span className='heading-separator'>/</span>A home for your favorite tabs</p>
         </div>
+        <button type='button' id='add-collection-button' className='primary-button' disabled={!currentSpace}
+          onClick={() => setIsNewCollectionModalOpen(true)}><span aria-hidden='true'>+</span> New collection</button>
+        <SingleTextModal title='Create New Collection' inputLabel='Title' placeHolder='e.g. Design inspiration'
+          cancelBtnText='CANCEL' okBtnText='CREATE' isOpen={isNewCollectionModalOpen}
+          onClose={() => setIsNewCollectionModalOpen(false)} onCreate={handleCreateCollection} />
+      </header>
     );
 }
-
 export default SpaceName;

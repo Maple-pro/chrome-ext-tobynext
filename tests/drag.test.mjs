@@ -73,3 +73,31 @@ test('moving a space to a different workspace via sorting is rejected', async ()
   };
   await dropItem({ type: 'space', id: 'a' }, 'other');
 });
+
+test('collections can be reordered within their current space', async () => {
+  const moves = [];
+  globalThis.chrome = {
+    bookmarks: {
+      get: async (id) => [
+        { id, parentId: 'space', index: id === 'first' ? 0 : 1 },
+      ],
+      move: async (...args) => moves.push(args),
+    },
+  };
+  await dropItem({ type: 'collection', id: 'second' }, 'space', 'first');
+  assert.deepEqual(moves, [['second', { parentId: 'space', index: 0 }]]);
+});
+
+test('collections can move directly into another space', async () => {
+  const moves = [];
+  globalThis.chrome = {
+    bookmarks: {
+      get: async (id) => [{ id, parentId: 'old-space', index: 0 }],
+      move: async (...args) => moves.push(args),
+    },
+  };
+  await dropItem({ type: 'collection', id: 'collection' }, 'new-space');
+  assert.deepEqual(moves, [
+    ['collection', { parentId: 'new-space', index: 0 }],
+  ]);
+});

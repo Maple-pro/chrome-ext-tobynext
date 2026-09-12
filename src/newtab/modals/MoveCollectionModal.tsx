@@ -69,22 +69,22 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({
   }
 
   return (
-    <Modal onClose={onClose} label='MoveCollection'>
-      <div className='bg-toby-bg-gray relative flex w-500 flex-col items-start justify-between rounded-md px-24 py-12 opacity-100 shadow-md'>
-        <h2 className='mb-15 text-[18px] font-bold'>
-          Move {collection.title} Collection to
+    <Modal onClose={onClose} label='Move collection'>
+      <div className='modal-content'>
+        <h2 className='modal-title'>
+          Move {collection.title}
         </h2>
 
         {/* Workspace selector */}
-        <div className='mb-15 w-full'>
-          <label className='mb-10 block text-[14px]'>Workspace</label>
-          <select
+        <div className='modal-field'>
+          <label htmlFor='move-workspace' className='modal-label'>Workspace</label>
+          <select id='move-workspace'
             value={selectedWorkspace?.id || DEFAULT_OPTION_VALUE}
             onChange={(e) => {
               setSelectedWorkspace(getBookmarkById(e.target.value, workspaces));
               setSelectedSpace(undefined);
             }}
-            className='h-35 w-full rounded border p-4 text-[14px]'
+            className='modal-input'
           >
             <option value={DEFAULT_OPTION_VALUE} disabled>
               Select a workspace
@@ -98,14 +98,14 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({
         </div>
 
         {/* Space selector */}
-        <div className='mb-15 w-full'>
-          <label className='mb-10 block text-[14px]'>Space</label>
-          <select
+        <div className='modal-field'>
+          <label htmlFor='move-space' className='modal-label'>Space</label>
+          <select id='move-space'
             value={selectedSpace?.id || DEFAULT_OPTION_VALUE}
             onChange={(e) =>
               setSelectedSpace(getBookmarkById(e.target.value, spaces))
             }
-            className='h-35 w-full rounded border p-4 text-[14px]'
+            className='modal-input'
             disabled={!selectedWorkspace}
           >
             <option value={DEFAULT_OPTION_VALUE} disabled>
@@ -120,16 +120,16 @@ const MoveCollectionModal: React.FC<MoveCollectionModalProps> = ({
         </div>
 
         {/* buttons */}
-        <div className='flex w-full items-center justify-between space-x-4'>
+        <div className='modal-actions'>
           <button
             onClick={handleClose}
-            className='text-toby-blue mx-10 basis-1/2 cursor-pointer rounded-md px-10 py-5 font-bold'
+            type='button' className='secondary-button'
           >
             CANCEL
           </button>
           <button
             onClick={handleMove}
-            className={`mx-10 basis-1/2 rounded px-10 py-5 ${selectedSpace ? 'bg-toby-blue text-toby-bg-gray' : 'cursor-not-allowed text-gray-300 outline-gray-300'}`}
+            type='button' className='primary-button'
             disabled={!selectedSpace}
           >
             MOVE

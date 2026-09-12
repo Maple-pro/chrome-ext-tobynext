@@ -26,51 +26,31 @@ function NewTabContent(): JSX.Element {
 
   return (
     <div id='my-ext' data-theme='light'>
-      {error && (
-        <div role='alert'>
-          {error} <button onClick={refresh}>Retry</button>
-        </div>
-      )}
-      <div
-        id='main-container'
-        className='bg-toby-bg-gray flex h-screen w-screen'
-      >
-        <div
-          id='navigation-panel-group'
-          className='flex h-full flex-none basis-290'
-        >
-          <div
-            id='workspace-panel'
-            className='flex h-full flex-none basis-70 flex-col py-16'
-          >
+      {error && <div className='app-error' role='alert'>{error}<button type='button' onClick={refresh}>Try again</button></div>}
+      <div id='main-container' className='app-layout'>
+        <div id='navigation-panel-group' className='navigation-panels'>
+          <nav id='workspace-panel' className='workspace-rail' aria-label='Workspaces'>
+            <div className='brand-mark' title='Toby Next' aria-label='Toby Next'>t<span>n</span><i /></div>
             {rootFolder && <Workspaces />}
             {rootFolder && <WorkspaceAdd />}
-            <Help />
-            <TobyImport />
-          </div>
-          <div
-            id='space-panel'
-            className='border-toby-outline-gray flex h-full flex-none basis-220 flex-col border-x-1 border-solid'
-          >
-            {currentWorkspace && <WorkspaceName />}
+            <div className='rail-footer'><Help /><TobyImport /></div>
+          </nav>
+          <aside id='space-panel' className='spaces-sidebar' aria-label='Spaces'>
+            <WorkspaceName />
             <Search />
             {currentWorkspace && <Spaces />}
-          </div>
+            <div className='sidebar-footer'><span className='status-dot' />Your personal tab library</div>
+          </aside>
         </div>
-        <div
-          id='collection-container'
-          className='border-toby-outline-gray flex h-full max-w-[calc(100vw-510px)] shrink grow basis-auto flex-col border-r-1 border-solid'
-        >
+        <main id='collections-main' className='collections-main'>
           <SpaceName />
           <Collections />
-        </div>
-        <div
-          id='tab-container'
-          className='flex h-full max-w-220 flex-none basis-220 flex-col'
-        >
+        </main>
+        <aside id='tab-container' className='tabs-sidebar' aria-label='Open tabs'>
           <TabName />
           <Windows />
-        </div>
+          <div className='tabs-footer'><span aria-hidden='true'>↖</span> Drag a tab into a collection to save it</div>
+        </aside>
       </div>
     </div>
   );

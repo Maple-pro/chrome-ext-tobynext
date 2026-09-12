@@ -1,15 +1,9 @@
-import React, { JSX } from "react";
-import { useNewTabContext } from "../context/NewTabContext";
-
-
-const WorkspaceName = (): JSX.Element => {
-    const {currentWorkspace} = useNewTabContext();
-
-    return (
-        <div id="workspace-name-container" className="w-full h-50 flex-none flex items-center justify-start pl-12 text-[18px] border-b-1 border-solid border-toby-outline-gray">
-            {currentWorkspace?.title || ""}
-        </div>
-    );
+import React from 'react';
+import { useNewTabContext } from '../context/NewTabContext';
+export default function WorkspaceName() {
+  const { currentWorkspace } = useNewTabContext();
+  return <header id='workspace-name-container' className='workspace-heading'>
+    <span className='eyebrow'>WORKSPACE</span>
+    <h1 title={currentWorkspace?.title}>{currentWorkspace?.title || 'Toby Next'}</h1>
+  </header>;
 }
-
-export default WorkspaceName;

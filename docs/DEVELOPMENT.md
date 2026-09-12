@@ -39,6 +39,8 @@ pnpm dev
 
 页面依赖 `chrome.bookmarks`、`chrome.tabs` 等扩展 API，应在加载后的扩展页面中验证。直接访问终端输出的 localhost 地址，或使用 `pnpm preview`，不能替代完整扩展验证。
 
+开发服务和 HMR 共用 `5173` 端口，并设置 `strictPort: true`。如果端口已占用，先停止占用端口的开发服务；需要换端口时修改 `vite.config.ts` 中的 `devPort`，不要仅用 `--port` 改变 HTTP 端口。
+
 ### 修改代码后的刷新方式
 
 | 修改内容                 | 操作                                                 |
@@ -154,12 +156,16 @@ Chrome 可能同时提供账号和本地书签栏，因此根目录查询使用 
 
 ### 拖拽规则
 
-| 拖动内容 | 放置位置                | 结果                        |
-| -------- | ----------------------- | --------------------------- |
-| 书签     | 另一书签的上半部/下半部 | 插入目标之前/之后，可跨集合 |
-| 书签     | 集合空白处              | 追加到集合末尾              |
-| 标签页   | 书签行或集合            | 创建书签，保留原标签页      |
-| 空间     | 同工作区的另一空间      | 调整空间顺序                |
+| 拖动内容   | 放置位置                         | 结果                         |
+| ---------- | -------------------------------- | ---------------------------- |
+| 书签       | 另一书签的上半部/下半部          | 插入目标之前/之后，可跨集合  |
+| 书签       | 集合空白处                       | 追加到集合末尾               |
+| 标签页     | 书签行或集合                     | 创建书签，保留原标签页       |
+| 空间       | 同工作区的另一空间               | 调整空间顺序                 |
+| Collection | 当前 Space 中的另一个 Collection | 调整 Collection 顺序         |
+| Collection | 左侧已存在的 Space               | 移入该 Space 并自动置顶，不会变成 Space |
+
+Collection 标题栏的 Move 操作可以通过 Workspace/Space 选择器移动到其他 Space。
 
 内部协议使用 `application/x-tobynext-item`，仅接受本页面发起、类型和 ID 匹配的拖拽。外部文本、网页拖拽或格式错误的数据会被忽略；文件导入弹窗使用独立的文件拖放处理。
 
@@ -174,6 +180,9 @@ Chrome 可能同时提供账号和本地书签栏，因此根目录查询使用 
 ```bash
 # 单元测试
 pnpm test
+
+# 开发模式 HMR 客户端回归
+pnpm test:dev
 
 # 类型检查
 pnpm exec tsc -b
@@ -266,6 +275,10 @@ unzip -p "release/tobynext-${release_version}.zip" manifest.json
 ### 上传商店
 
 在 [Chrome Web Store 开发者控制台](https://chrome.google.com/webstore/devconsole) 中，新发布创建条目，更新已有扩展则打开原条目上传新包。补全或核对商店资料、权限用途和隐私声明后，按控制台提示提交审核。生成 ZIP 不会自动上传或发布。具体步骤见 [官方发布流程](https://developer.chrome.com/docs/webstore/publish/)。
+
+### 开发 WebSocket 端口错误
+
+若出现 `ws://localhost:undefined/`，确认 `vite.config.ts` 中显式设置了同一个 `server.port` 和 `server.hmr.port`。停止旧的 `pnpm dev` 后重新启动，在 `chrome://extensions` 重新加载扩展，再打开新的标签页，让旧开发 worker 和客户端更新。相关上游问题见 [CRXJS issue #696](https://github.com/crxjs/chrome-extension-tools/issues/696)。
 
 ## 8. 常见问题
 

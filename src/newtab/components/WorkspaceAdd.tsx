@@ -1,5 +1,6 @@
 import React, { JSX, useState } from "react";
 import addIcon from "@assets/add-workspace.svg";
+import IconButton from "./IconButton";
 import SingleTextModal from "../modals/SingleTextModal";
 import { useNewTabContext } from "../context/NewTabContext";
 
@@ -25,8 +26,8 @@ const WorkspaceAdd = (): JSX.Element => {
     };
 
     return (
-        <div id="add-btns-container" className="mt-20 flex justify-center items-center">
-            <img src={addIcon} onClick={() => setIsNewWorkspaceModalOpen(true)} className="w-24 h-24" />
+        <div id="add-btns-container" className="workspace-add">
+            <IconButton icon={addIcon} label="Create workspace" onClick={() => setIsNewWorkspaceModalOpen(true)} />
 
             <SingleTextModal 
                 title="Create New Workspace"

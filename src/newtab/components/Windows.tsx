@@ -9,7 +9,7 @@ const Windows = (): JSX.Element => {
   return (
     <div
       id='windows-panel'
-      className='no-scrollbar flex w-full flex-col items-center overflow-y-auto p-10'
+      className='windows-panel'
     >
       {error && <p role='alert'>{error}</p>}
       {windows.map((window, index) => (

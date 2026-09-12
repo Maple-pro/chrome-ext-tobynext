@@ -13,7 +13,8 @@
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:dev": "node --test tests/dev/*.test.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",

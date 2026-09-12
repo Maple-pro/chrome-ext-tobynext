@@ -104,9 +104,9 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
   };
 
   return (
-    <Modal onClose={onClose} label='FileUpload'>
-      <div className='bg-toby-bg-gray relative flex w-300 flex-col items-start justify-between rounded-md px-24 py-12 shadow-md'>
-        <h2 className='mb-15 text-[18px] font-bold'>Import Bookmarks</h2>
+    <Modal onClose={onClose} label='Import bookmarks'>
+      <div className='modal-content'>
+        <h2 className='modal-title'>Import Bookmarks</h2>
         {loading ? (
           <div className='mx-auto flex items-center justify-center'>
             <svg
@@ -130,7 +130,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
           </div>
         ) : (
           <div
-            className={`border-2 border-dashed p-6 text-center text-[14px] ${dragging ? 'border-toby-blue' : 'border-toby-outline-gray'}`}
+            className={`file-drop ${dragging ? 'drop-inside' : ''}`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -138,19 +138,19 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ onClose }) => {
             {file ? (
               <p>{file.name}</p>
             ) : (
-              <p>Drag & Drop Toby exported JSON file here</p>
+              <p>Drop your Toby export here, or choose a JSON file.</p>
             )}
             <input
               type='file'
               accept='.json'
               onChange={handleFileSelect}
-              className='hidden'
+              aria-label='Choose Toby JSON file'
             />
           </div>
         )}
-        <div className='mx-auto mt-10 flex h-30 w-1/2 flex-none items-center justify-center'>
+        <div className='modal-actions'>
           <button
-            className='text-toby-blue cursor-pointer rounded-md px-4 py-2 font-bold'
+            type='button' className='secondary-button'
             onClick={onClose}
           >
             CANCEL

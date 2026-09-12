@@ -8,15 +8,15 @@ import { useDragSource, useDropTarget } from '../hooks/useDrag';
 import { canClick } from '../services/drag';
 
 export default function SpaceRow({ space }: { space: BookmarkTreeNode }) {
-  const { currentSpace, setCurrentSpace } = useNewTabContext();
+  const { currentSpace, setCurrentSpace, dragType } = useNewTabContext();
   const { sourceProps, dragging } = useDragSource({
     type: 'space',
     id: space.id,
   });
   const { targetProps, dropClass, error } = useDropTarget(
-    ['space'],
-    space.parentId!,
-    space.id
+    ['space', 'collection'],
+    dragType === 'collection' ? space.id : space.parentId!,
+    dragType === 'collection' ? undefined : space.id
   );
   const selected = currentSpace?.id === space.id;
   return (
@@ -37,7 +37,8 @@ export default function SpaceRow({ space }: { space: BookmarkTreeNode }) {
       }}
       title={error || space.title}
       style={{ opacity: dragging ? 0.5 : 1 }}
-      className={`mb-5 flex h-25 w-full items-center justify-start ${dropClass}`}
+      aria-current={selected ? 'page' : undefined}
+      className={`space-row ${dropClass}`}
     >
       <img
         src={selected ? selectedFolderIcon : folderIcon}

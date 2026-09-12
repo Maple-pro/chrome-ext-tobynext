@@ -1,14 +1,7 @@
-import React, { JSX } from "react";
-
-
-const TabName = (): JSX.Element => {
-    return (
-        <div id="tab-name-panel" className="w-full h-50 flex-none flex items-center justify-end px-15 border-b-1 border-solid border-toby-outline-gray">
-            <div id="tab-name" className="text-[12px] font-bold">
-                OPEN TABS
-            </div>
-        </div>
-    );
+import React from 'react';
+export default function TabName() {
+  return <header id='tab-name-panel' className='tabs-heading'>
+    <div><span className='eyebrow'>RIGHT NOW</span><h2 id='tab-name'>Open tabs</h2></div>
+    <span className='live-badge'><span className='status-dot' />Live</span>
+  </header>;
 }
-
-export default TabName;

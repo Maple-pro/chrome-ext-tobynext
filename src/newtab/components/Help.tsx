@@ -1,19 +1,7 @@
-import React, { JSX } from "react";
-import helpIcon from "@assets/help.svg";
-
-
-const helpUrl = "https://sites.maples31.com/tobynext/";
-
-const Help = (): JSX.Element => {
-    return (
-        <div id="import-btn-container" className="mt-auto flex justify-center items-center">
-            <img 
-                src={helpIcon} 
-                onClick={() => window.open(helpUrl, "_blank")}
-                className="w-30 h-30 cursor-pointer" 
-            />
-        </div>
-    );
+import React from 'react';
+import helpIcon from '@assets/help.svg';
+import IconButton from './IconButton';
+export default function Help() {
+  return <IconButton icon={helpIcon} label='Help & documentation'
+    onClick={() => window.open('http://sites.maples31.com/tobynext/', '_blank', 'noopener')} />;
 }
-
-export default Help;

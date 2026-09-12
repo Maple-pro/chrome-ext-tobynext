@@ -10,7 +10,7 @@ import {
   readDrag,
 } from '../services/drag';
 
-export function useDragSource(item: DragItem) {
+export function useDragSource(item: DragItem, allowedControlSelector?: string) {
   const { setDragType, dragType } = useNewTabContext();
   const [dragging, setDragging] = useState(false);
   useEffect(() => {
@@ -21,7 +21,13 @@ export function useDragSource(item: DragItem) {
     sourceProps: {
       draggable: true,
       onDragStart(event: React.DragEvent) {
-        if ((event.target as HTMLElement).closest('button,input,dialog')) {
+        const control = (event.target as HTMLElement).closest(
+          'button,input,dialog'
+        );
+        if (
+          control &&
+          (!allowedControlSelector || !control.matches(allowedControlSelector))
+        ) {
           event.preventDefault();
           return;
         }

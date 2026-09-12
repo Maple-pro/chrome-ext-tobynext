@@ -12,7 +12,7 @@ let bookmarkIds: string[];
 
 test.beforeAll(async () => {
   profile = await mkdtemp(join(tmpdir(), 'tobynext-test-'));
-  const extension = resolve('dist');
+  const extension = resolve(process.env.TEST_EXTENSION_DIR || 'dist');
   context = await chromium.launchPersistentContext(profile, {
     channel: 'chromium',
     executablePath: process.env.TEST_CHROME_EXECUTABLE,

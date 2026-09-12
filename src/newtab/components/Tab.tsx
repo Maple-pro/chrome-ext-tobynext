@@ -5,16 +5,17 @@ import defaultFavicon from '@assets/default-fav-icon.svg';
 
 import { useDragSource } from '../hooks/useDrag';
 import { canClick } from '../services/drag';
+import IconButton from './IconButton';
 
 interface TabProps {
   tab: ChromeTab;
 }
 
 const Tab = (props: TabProps): JSX.Element => {
-  const { sourceProps, dragging } = useDragSource({
-    type: 'tab',
-    id: props.tab.id!,
-  });
+  const { sourceProps, dragging } = useDragSource(
+    { type: 'tab', id: props.tab.id! },
+    '.tab-title'
+  );
 
   const handleTabClick = () => {
     if (!canClick()) return;
@@ -38,35 +39,36 @@ const Tab = (props: TabProps): JSX.Element => {
     <div
       id='tab'
       data-tab-id={props.tab.id}
-      onClick={handleTabClick}
       {...sourceProps}
-      style={{ opacity: dragging ? 0.5 : 1 }}
-      className='group border-toby-outline-gray shadow-toby-outline-gray my-5 flex h-35 w-full cursor-pointer flex-row items-center rounded-sm border-1 border-solid px-10 py-5 shadow-sm'
+      className={`tab-row ${props.tab.active ? 'is-active' : ''} ${dragging ? 'is-dragging' : ''}`}
     >
-      <div
-        id='tab-icon'
-        className='mr-10 flex h-15 w-15 flex-none items-center justify-center'
+      <img
+        className='tab-favicon'
+        alt=''
+        draggable={false}
+        src={props.tab.favIconUrl || defaultFavicon}
+        onError={(event) => {
+          event.currentTarget.src = defaultFavicon;
+        }}
+      />
+      <button
+        type='button'
+        id='tab-title'
+        className='tab-title'
+        title={props.tab.title || props.tab.url}
+        onClick={handleTabClick}
       >
-        <img
-          src={props.tab.favIconUrl ? props.tab.favIconUrl : defaultFavicon}
-          onError={(e) => {
-            e.currentTarget.src = defaultFavicon;
-          }}
-          className='h-full w-full object-contain'
-        />
-      </div>
-      <div id='tab-title' className='truncate text-[14px]'>
-        {props.tab.title}
-      </div>
-      <div
+        {props.tab.title || props.tab.url}
+      </button>
+      <IconButton
         id='tab-close-button'
+        className='tab-close'
+        icon={closeIcon}
+        label='Close tab'
+        danger
         onClick={handleCloseTab}
-        className='ml-auto hidden h-15 w-15 flex-none items-center justify-center group-hover:flex'
-      >
-        <img src={closeIcon} className='h-full w-full' />
-      </div>
+      />
     </div>
   );
 };
-
 export default Tab;

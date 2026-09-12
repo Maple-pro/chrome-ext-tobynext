@@ -2,30 +2,37 @@ import React, { JSX, useEffect, useState } from 'react';
 import type { BookmarkTreeNode } from '@/types';
 import deleteCollectionIcon from '@assets/delete-collection.svg';
 import expandCollectionIcon from '@assets/expand-window.svg';
-import moreIcon from '@assets/more.svg';
 import moveToIcon from '@assets/move-to.svg';
 import openCollectionIcon from '@assets/open-collection.svg';
 
 import { useNewTabContext } from '../context/NewTabContext';
-import { useDropTarget } from '../hooks/useDrag';
+import { useDragSource, useDropTarget } from '../hooks/useDrag';
 import MoveCollectionModal from '../modals/MoveCollectionModal';
 import Bookmark from './Bookmark';
+import IconButton from './IconButton';
 
 interface CollectionProps {
   collection: BookmarkTreeNode;
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
-  const { refresh } = useNewTabContext();
+  const { refresh, currentSpace, dragType } = useNewTabContext();
 
   const [bookmarks, setBookmarks] = useState<BookmarkTreeNode[]>([]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(props.collection.title);
   const { targetProps, dropClass, error } = useDropTarget(
-    ['bookmark', 'tab'],
-    props.collection.id
+    ['bookmark', 'tab', 'collection'],
+    dragType === 'collection'
+      ? currentSpace?.id || props.collection.parentId || props.collection.id
+      : props.collection.id,
+    dragType === 'collection' ? props.collection.id : undefined
   );
+  const { sourceProps, dragging } = useDragSource({
+    type: 'collection',
+    id: props.collection.id,
+  });
   const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
 
   useEffect(() => {
@@ -84,79 +91,93 @@ const Collection = (props: CollectionProps): JSX.Element => {
   };
 
   return (
-    <div
+    <section
       id='collection-container'
       data-collection-id={props.collection.id}
+      {...sourceProps}
       {...targetProps}
-      className={`border-toby-outline-gray flex w-full grow-0 flex-col border-b-1 border-solid px-30 py-24 ${dropClass}`}
+      className={`collection-card ${dropClass} ${dragging ? 'is-dragging' : ''}`}
+      aria-label={props.collection.title}
     >
-      {error && <p role='alert'>{error}</p>}
-      <div
-        id='collection-title-container'
-        className='flex flex-row items-center justify-between'
-      >
-        <div id='collection-title-group' className='flex flex-row items-center'>
-          <div id='collection-title' className='mr-15 flex-1 text-[18px]'>
+      {error && (
+        <p className='inline-error' role='alert'>
+          {error}
+        </p>
+      )}
+      <div id='collection-title-container' className='collection-header'>
+        <div id='collection-title-group' className='collection-title-group'>
+          <IconButton
+            id='collection-expand-icon'
+            icon={expandCollectionIcon}
+            label={isExpanded ? 'Collapse collection' : 'Expand collection'}
+            aria-expanded={isExpanded}
+            className={isExpanded ? '' : 'is-collapsed'}
+            onClick={handleExpandToggle}
+          />
+          <div id='collection-title' className='collection-title'>
             {isEditing ? (
               <input
                 type='text'
                 value={newTitle}
                 onChange={handleTitleChange}
                 onKeyDown={handleKeyPress}
+                aria-label='Collection title'
                 autoFocus
-                className='w-full border-b-1 border-black text-[18px] outline-none'
+                className='collection-title-input'
               />
             ) : (
-              <span onClick={handleCollectionTitleClick} className='w-full'>
+              <button
+                type='button'
+                className='title-button'
+                title='Rename collection'
+                onClick={handleCollectionTitleClick}
+              >
                 {props.collection.title}
-              </span>
+              </button>
             )}
           </div>
-          {isEditing || (
-            <div
-              id='collection-expand-icon'
-              className={`flex h-18 w-18 cursor-pointer items-center justify-center transition-transform duration-300 ${isExpanded ? '' : 'rotate-[-90deg]'}`}
-              onClick={handleExpandToggle}
-            >
-              <img src={expandCollectionIcon} />
-            </div>
-          )}
+          <span
+            className='count-badge'
+            title={`${bookmarks.length} saved tabs`}
+          >
+            {bookmarks.length}
+          </span>
         </div>
-        <div id='collection-button-group' className='flex flex-row'>
-          <div
+        <div id='collection-button-group' className='collection-actions'>
+          <IconButton
             id='move-to-icon'
+            icon={moveToIcon}
+            label='Move collection'
             onClick={() => setIsMoveModalOpen(true)}
-            className='mx-10 flex h-18 w-18 cursor-pointer items-center justify-center'
-          >
-            <img src={moveToIcon} />
-          </div>
-          <div
+          />
+          <IconButton
             id='open-collection-icon'
+            icon={openCollectionIcon}
+            label='Open collection'
+            disabled={!bookmarks.length}
             onClick={handleOpenCollection}
-            className='mx-10 flex h-18 w-18 cursor-pointer items-center justify-center'
-          >
-            <img src={openCollectionIcon} />
-          </div>
-          <div
+          />
+          <span className='action-divider' />
+          <IconButton
             id='delete-collection-icon'
+            icon={deleteCollectionIcon}
+            label='Delete collection'
+            danger
             onClick={handleDeleteCollection}
-            className='mx-10 flex h-18 w-18 cursor-pointer items-center justify-center'
-          >
-            <img src={deleteCollectionIcon} />
-          </div>
-          <div
-            id='more-operation-icon'
-            className='mx-10 flex h-18 w-18 cursor-pointer items-center justify-center'
-          >
-            <img src={moreIcon} />
-          </div>
+          />
         </div>
       </div>
       {isExpanded && (
-        <div id='collection-items-container' className='pt-20'>
-          {bookmarks.map((bookmark) => (
-            <Bookmark key={bookmark.id} bookmark={bookmark} />
-          ))}
+        <div id='collection-items-container' className='collection-items'>
+          {bookmarks.length ? (
+            bookmarks.map((bookmark) => (
+              <Bookmark key={bookmark.id} bookmark={bookmark} />
+            ))
+          ) : (
+            <div className='collection-empty'>
+              <span aria-hidden='true'>+</span>Drop tabs or bookmarks here
+            </div>
+          )}
         </div>
       )}
       <MoveCollectionModal
@@ -164,8 +185,7 @@ const Collection = (props: CollectionProps): JSX.Element => {
         onClose={() => setIsMoveModalOpen(false)}
         collection={props.collection}
       />
-    </div>
+    </section>
   );
 };
-
 export default Collection;
