@@ -28,7 +28,7 @@ export default defineManifest({
     48: 'icon48.png',
     128: 'icon128.png',
   },
-  permissions: ['tabs', 'storage', 'bookmarks', 'favicon'],
+  permissions: ['tabs', 'tabGroups', 'storage', 'bookmarks', 'favicon'],
   content_scripts: [],
   web_accessible_resources: [],
   chrome_url_overrides: {

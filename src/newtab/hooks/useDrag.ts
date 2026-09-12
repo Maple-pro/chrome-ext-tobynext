@@ -14,8 +14,22 @@ export function useDragSource(item: DragItem, allowedControlSelector?: string) {
   const { setDragType, dragType } = useNewTabContext();
   const [dragging, setDragging] = useState(false);
   useEffect(() => {
-    if (!dragType) setDragging(false);
-  }, [dragType]);
+    if (!dragType || dragType !== item.type) setDragging(false);
+  }, [dragType, item.type]);
+  useEffect(() => {
+    if (!dragging) return;
+    const resetDragging = () => {
+      setDragging(false);
+      setDragType('');
+      (document.activeElement as HTMLElement | null)?.blur();
+    };
+    window.addEventListener('dragend', resetDragging, true);
+    window.addEventListener('drop', resetDragging, true);
+    return () => {
+      window.removeEventListener('dragend', resetDragging, true);
+      window.removeEventListener('drop', resetDragging, true);
+    };
+  }, [dragging, setDragType]);
   return {
     dragging,
     sourceProps: {
@@ -40,6 +54,7 @@ export function useDragSource(item: DragItem, allowedControlSelector?: string) {
         endDrag();
         setDragging(false);
         setDragType('');
+        (document.activeElement as HTMLElement | null)?.blur();
       },
     },
   };

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { ChromeWindow } from '@/types';
+import type { ChromeTabGroup, OpenTabsWindow } from '@/types';
 
 export function useWindows() {
-  const [windows, setWindows] = useState<ChromeWindow[]>([]);
+  const [windows, setWindows] = useState<OpenTabsWindow[]>([]);
   const [error, setError] = useState('');
   useEffect(() => {
     let active = true;
@@ -15,8 +15,36 @@ export function useWindows() {
           populate: true,
           windowTypes: ['normal'],
         });
+        const withGroups = await Promise.all(
+          result.map(async (window) => {
+            const groupIds = [
+              ...new Set(
+                (window.tabs ?? [])
+                  .map((tab) => tab.groupId)
+                  .filter((groupId): groupId is number => groupId >= 0)
+              ),
+            ];
+            const tabGroups = await Promise.all(
+              groupIds.map(
+                async (groupId): Promise<ChromeTabGroup | undefined> => {
+                  try {
+                    return await chrome.tabGroups.get(groupId);
+                  } catch {
+                    return undefined;
+                  }
+                }
+              )
+            );
+            return {
+              ...window,
+              tabGroups: tabGroups.filter((group): group is ChromeTabGroup =>
+                Boolean(group)
+              ),
+            };
+          })
+        );
         if (active && current === revision) {
-          setWindows(result);
+          setWindows(withGroups);
           setError('');
         }
       } catch (reason) {
@@ -35,6 +63,9 @@ export function useWindows() {
       chrome.tabs.onAttached,
       chrome.tabs.onDetached,
       chrome.tabs.onActivated,
+      chrome.tabGroups.onCreated,
+      chrome.tabGroups.onUpdated,
+      chrome.tabGroups.onRemoved,
       chrome.windows.onCreated,
       chrome.windows.onRemoved,
     ];
