@@ -50,3 +50,6 @@ If you're a Toby user, you can import your Toby data effortlessly via the import
 💻 Try TobyNext today and take control of your tab chaos!
 
 👉 Install [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)
+## Development
+
+The current source targets Chrome 134+ with Manifest V3 and CRXJS 2.x. See [development notes](docs/DEVELOPMENT.md) for setup, development and debugging, architecture, tests, Chrome Web Store packaging, and troubleshooting.

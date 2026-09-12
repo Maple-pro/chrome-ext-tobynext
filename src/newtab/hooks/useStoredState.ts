@@ -1,39 +1,43 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { BookmarkTreeNode } from '@/types';
 
-export function useStoredState<T>(key: string, defaultValue?: T) {
-    const [value, setValue] = useState<T | undefined>(defaultValue);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const loadBookmarkFromStorage = async () => {
-            try {
-                const stored = await chrome.storage.local.get([key]);
-                if (stored[key]) {
-                    const existingBookmarks = await chrome.bookmarks.get(stored[key].id).catch(() => null);
-                    if (existingBookmarks && existingBookmarks.length > 0) {
-                        setValue(stored[key]);
-                        console.log("load %s: %s", key, stored[key] ? stored[key].title : undefined);
-                    } else {
-                        console.warn("Stored bookmark no longer exists: " + stored[key].title);
-                        setValue(undefined);
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to load workspace from chrome storage: ", error);
-            } finally {
-                setIsLoaded(true);
-            }
-        };
-
-        loadBookmarkFromStorage();
-
-    }, [key]);
-
-    const updateValue = (newValue: T | undefined) => {
-        setValue(newValue);
-        chrome.storage.local.set({ [key]: newValue });
-        console.log("store %s: %s", key, newValue ? (newValue as unknown as chrome.bookmarks.BookmarkTreeNode).title : undefined );
+/** Store selection IDs, accepting legacy bookmark objects on upgrade. */
+export function useStoredState<T extends BookmarkTreeNode | undefined>(
+  key: string
+) {
+  const [value, setValue] = useState<T>();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const writeQueue = useRef(Promise.resolve());
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const stored = (await chrome.storage.local.get(key))[key];
+        const id = typeof stored === 'string' ? stored : stored?.id;
+        const nodes = id ? await chrome.bookmarks.get(id).catch(() => []) : [];
+        if (active) setValue(nodes[0] as T);
+      } catch (error) {
+        console.error('Could not load selection', error);
+      } finally {
+        if (active) setIsLoaded(true);
+      }
+    })();
+    return () => {
+      active = false;
     };
-
-    return [value, updateValue, isLoaded] as const;
+  }, [key]);
+  const updateValue = useCallback(
+    (next: T | undefined) => {
+      setValue(next);
+      writeQueue.current = writeQueue.current
+        .then(() =>
+          next
+            ? chrome.storage.local.set({ [key]: next.id })
+            : chrome.storage.local.remove(key)
+        )
+        .catch((error) => console.error('Could not save selection', error));
+    },
+    [key]
+  );
+  return [value, updateValue, isLoaded] as const;
 }

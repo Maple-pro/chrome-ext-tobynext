@@ -127,3 +127,26 @@
     scrollbar-width: none;  /* Firefox */
   }
 }
+
+.toby-modal {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  color: inherit;
+  background: var(--color-toby-bg-gray);
+}
+.toby-modal::backdrop { background: rgb(0 0 0 / 45%); }
+.toby-modal > div { max-width: calc(100vw - 32px); }
+[draggable="true"] { cursor: grab; transition: background-color 120ms, opacity 120ms, box-shadow 120ms; }
+[draggable="true"]:active { cursor: grabbing; }
+[draggable="true"] img { -webkit-user-drag: none; user-select: none; }
+.drop-before { box-shadow: 0 -3px 0 var(--color-toby-blue); }
+.drop-after { box-shadow: 0 3px 0 var(--color-toby-blue); }
+.drop-inside { background: rgb(60 92 206 / 7%); outline: 2px dashed var(--color-toby-blue); outline-offset: -3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+}

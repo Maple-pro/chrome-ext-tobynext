@@ -51,3 +51,7 @@ TobyNext 不会存储你的任何数据，所有标签页都保存在 Chrome 书
 💻 立即体验 TobyNext，告别标签页混乱，提升你的工作效率！
 
 👉 安装 [TobyNext](https://chromewebstore.google.com/detail/toby-next/nmoefidlkpebfihkgoibgcfaehpefebe?authuser=0&hl=zh-CN)
+
+## 开发与兼容性
+
+当前源码支持 Chrome 134+，使用 Manifest V3 和 CRXJS 2.x。环境准备、开发调试、架构、测试、商店上传打包与常见问题见 [开发文档](docs/DEVELOPMENT.md)。

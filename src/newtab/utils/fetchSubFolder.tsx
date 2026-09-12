@@ -1,22 +1,7 @@
-export default async (folder: BookmarkTreeNode): Promise<BookmarkTreeNode[]> => {
-    if (!folder || folder.url) {
-        if (folder) {
-            console.error("Bookmark is not folder: " + folder.title);
-        }
-        Promise.resolve();
-        return [];
-    }
+import type { BookmarkTreeNode } from '@/types';
 
-    const children = await new Promise<BookmarkTreeNode[]>((resolve) => {
-        chrome.bookmarks.getChildren(folder.id, resolve);
-    });
+import { folders } from '../services/bookmarks';
 
-    let subFolders = [];
-    for (const child of children) {
-        if (!child.url) {
-            subFolders.push(child);
-        }
-    }
-
-    return subFolders;
+export default function fetchSubFolder(folder: BookmarkTreeNode) {
+  return folders(folder.id);
 }

@@ -1,170 +1,141 @@
-import React, { JSX, useState } from "react";
-import deleteBookmarkIcon from "@assets/close-tab.svg";
-import editBookmarkIcon from "@assets/edit-bookmark.svg";
-import defaultFavicon from "@assets/default-fav-icon.svg";
-import { useNewTabContext } from "../context/NewTabContext";
-import SingleTextModal from "../modals/SingleTextModal";
+import React, { JSX, useState } from 'react';
+import type { BookmarkTreeNode } from '@/types';
+import deleteBookmarkIcon from '@assets/close-tab.svg';
+import defaultFavicon from '@assets/default-fav-icon.svg';
+import editBookmarkIcon from '@assets/edit-bookmark.svg';
 
+import { useNewTabContext } from '../context/NewTabContext';
+import { useDragSource, useDropTarget } from '../hooks/useDrag';
+import SingleTextModal from '../modals/SingleTextModal';
+import { canClick } from '../services/drag';
 
 interface BookmarkProps {
-    bookmark: BookmarkTreeNode,
+  bookmark: BookmarkTreeNode;
 }
 
 const Bookmark = (props: BookmarkProps): JSX.Element => {
-    const [isDeleted, setIsDeleted] = useState(false);
-    const [isDragOver, setIsDragOver] = useState(false);
-    const [isDragging, setIsDragging] = useState(false);
-    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-    const {refresh, dragType, setDragType} = useNewTabContext();
+  const [isDeleted, setIsDeleted] = useState(false);
+  const { dragging: isDragging, sourceProps } = useDragSource({
+    type: 'bookmark',
+    id: props.bookmark.id,
+  });
+  const { dropClass, targetProps, error } = useDropTarget(
+    ['bookmark', 'tab'],
+    props.bookmark.parentId!,
+    props.bookmark.id
+  );
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const { refresh } = useNewTabContext();
 
-    const handleRename = (title: string) => {
-        chrome.bookmarks.update(props.bookmark.id, {title: title}, () => {
-            // refresh();
-            props.bookmark.title = title;
-            setIsRenameModalOpen(false);
-        });
-    };
+  const handleRename = async (title: string) => {
+    await chrome.bookmarks.update(props.bookmark.id, { title });
+    refresh();
+    setIsRenameModalOpen(false);
+  };
 
-    const handleEdit = (e: React.MouseEvent) => {
-        e.stopPropagation(); 
-        setIsRenameModalOpen(true);
-    };
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsRenameModalOpen(true);
+  };
 
-    const handleDelete = (event: React.MouseEvent) => {
-        event.stopPropagation();
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation();
 
-        if (props.bookmark.id) {
-            chrome.bookmarks.remove(props.bookmark.id, () => {
-                setIsDeleted(true);
-            });
-        }
-    };
-
-    const handleDragStart = (event: React.DragEvent) => {
-        setIsDragging(true);
-        event.dataTransfer.setData("type", "bookmark");
-        event.dataTransfer.setData("application/json", JSON.stringify(props.bookmark));
-        setDragType("bookmark");
-    };
-
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        if (!isDragOver && dragType === "bookmark") {
-            setIsDragOver(true);
-        }
-    };
-
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault(); 
-        if (!isDragOver && dragType === "bookmark") {
-            setIsDragOver(true);
-        }
-    };
-
-    const handleDragLeave = (e: React.DragEvent) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-            e.preventDefault();
-            setIsDragOver(false);
-        }
-    };
-
-    const handleDragEnd = () => {
-        setIsDragOver(false);
-        setIsDragging(false);
-        setDragType("");
-    };
-
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-
-        if (dragType === "tab") {
-            return;
-        }
-
-        e.stopPropagation();
-        setIsDragOver(false);
-        setIsDragging(false);
-        const type = e.dataTransfer.getData("type");
-        
-        if (type === "bookmark") {
-            const bookmarkData = e.dataTransfer.getData("application/json");
-            if (bookmarkData) {
-                const bookmark: BookmarkTreeNode = JSON.parse(bookmarkData);
-
-                if (bookmark.id === props.bookmark.id) {
-                    return;
-                }
-
-                chrome.bookmarks.move(bookmark.id, {
-                    parentId: props.bookmark.parentId,
-                    index: props.bookmark.index,
-                }, () => {
-                    refresh();
-                })
-            }
-        }
-    };
-
-    if (isDeleted) {
-        return (<div />);
+    if (props.bookmark.id) {
+      chrome.bookmarks.remove(props.bookmark.id, () => {
+        setIsDeleted(true);
+      });
     }
+  };
 
-    const getFaviconUrl = (url: string) => {
-        const domain = new URL(url).hostname;
-        return `https://www.google.com/s2/favicons?domain=${domain}`;
-    };
+  if (isDeleted) {
+    return <div />;
+  }
 
-    return (
-        <div 
-            id="bookmark-container" 
-            onClick={() => window.open(props.bookmark.url, "_blank")}
-            className={`group w-full h-40 my-10 px-20 py-10 rounded-md border-1 border-solid shadow-sm shadow-toby-outline-gray flex flex-row items-center justify-between cursor-pointer border-toby-outline-gray
-                ${isDragOver ? "border-t-2 border-t-toby-blue": ""}
-                ${isDragging ? "opacity-50": ""}`}
-            draggable
-            onDragStart={handleDragStart} 
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
+  const getFaviconUrl = (url: string) => {
+    const favicon = new URL(chrome.runtime.getURL('/_favicon/'));
+    favicon.searchParams.set('pageUrl', url);
+    favicon.searchParams.set('size', '32');
+    return favicon.href;
+  };
+
+  return (
+    <div
+      id='bookmark-container'
+      data-bookmark-id={props.bookmark.id}
+      onClick={() => {
+        if (canClick()) window.open(props.bookmark.url, '_blank', 'noopener');
+      }}
+      className={`group shadow-toby-outline-gray border-toby-outline-gray my-10 flex h-40 w-full cursor-pointer flex-row items-center justify-between rounded-md border-1 border-solid px-20 py-10 shadow-sm ${dropClass} ${isDragging ? 'opacity-50' : ''}`}
+      {...sourceProps}
+      {...targetProps}
+      title={error || props.bookmark.title}
+    >
+      <div
+        id='bookmark-favicon'
+        className='mr-10 flex h-16 w-16 flex-none items-center justify-center'
+      >
+        <img
+          src={
+            props.bookmark.url
+              ? getFaviconUrl(props.bookmark.url)
+              : defaultFavicon
+          }
+          onError={(e) => {
+            e.currentTarget.src = defaultFavicon;
+          }}
+          className='h-full w-full object-contain'
+        />
+      </div>
+      <div
+        id='bookmark-title'
+        className='shrink-1 grow-0 basis-1/2 truncate pr-20 text-[14px]'
+      >
+        {props.bookmark.title}
+      </div>
+      <div
+        id='bookmark-url'
+        className='shrink-4 grow-0 basis-1/2 truncate text-[12px] text-[#474759]'
+      >
+        {props.bookmark.url}
+      </div>
+      <div
+        id='bookmark-button-group'
+        className='invisible flex flex-none flex-row group-hover:visible'
+      >
+        <button
+          type='button'
+          aria-label='Rename bookmark'
+          id='edit-bookmark-button'
+          onClick={handleEdit}
+          className='ml-10 flex h-16 w-16 items-center justify-center'
         >
-            <div id="bookmark-favicon" className="flex-none w-16 h-16 flex justify-center items-center mr-10">
-                <img
-                    src={props.bookmark.url ? getFaviconUrl(props.bookmark.url) : defaultFavicon} 
-                    onError={e => {
-                        e.currentTarget.src = defaultFavicon;
-                    }}
-                    className="w-full h-full object-contain"
-            />
-            </div>
-            <div id="bookmark-title" className="truncate text-[14px] basis-1/2 shrink-1 grow-0 pr-20">
-                {props.bookmark.title}
-            </div>
-            <div id="bookmark-url" className="truncate text-[12px] text-[#474759] basis-1/2 shrink-4 grow-0">
-                {props.bookmark.url}
-            </div>
-            <div id="bookmark-button-group" className="flex-none flex flex-row invisible group-hover:visible">
-                <div id="edit-bookmark-button" onClick={handleEdit} className="w-16 h-16 ml-10 flex justify-center items-center">
-                    <img src={editBookmarkIcon} />
-                </div>
-                <div id="delete-bookmark-button" onClick={handleDelete} className="w-16 h-16 ml-10 flex justify-center items-center">
-                    <img src={deleteBookmarkIcon} />
-                </div>
-            </div>
+          <img src={editBookmarkIcon} />
+        </button>
+        <button
+          type='button'
+          aria-label='Delete bookmark'
+          id='delete-bookmark-button'
+          onClick={handleDelete}
+          className='ml-10 flex h-16 w-16 items-center justify-center'
+        >
+          <img src={deleteBookmarkIcon} />
+        </button>
+      </div>
 
-            <SingleTextModal
-                title="Rename Bookmark"
-                inputLabel="Title"
-                placeHolder="Enter Title"
-                cancelBtnText="CANCEL"
-                okBtnText="RENAME"
-                isOpen={isRenameModalOpen}
-                onClose={() => setIsRenameModalOpen(false)}
-                onCreate={handleRename}
-            />
-        </div>
-    )
-}
+      <SingleTextModal
+        title='Rename Bookmark'
+        initialValue={props.bookmark.title}
+        inputLabel='Title'
+        placeHolder='Enter Title'
+        cancelBtnText='CANCEL'
+        okBtnText='RENAME'
+        isOpen={isRenameModalOpen}
+        onClose={() => setIsRenameModalOpen(false)}
+        onCreate={handleRename}
+      />
+    </div>
+  );
+};
 
 export default Bookmark;

@@ -1,40 +1,22 @@
-import React, { JSX, useEffect, useState } from "react";
-import fetchAllWindows from "../utils/fetchAllWindows";
-import Window from "./Window";
+import React, { JSX } from 'react';
 
+import { useWindows } from '../hooks/useWindows';
+import Window from './Window';
 
 const Windows = (): JSX.Element => {
-    const [windows, setWindows] = useState<ChromeWindow[]>([]);
+  const { windows, error } = useWindows();
 
-    useEffect(() => {
-        fetchAllWindows(setWindows);
-
-        const handleTabChange = () => {
-            fetchAllWindows(setWindows);
-        };
-
-        chrome.tabs.onUpdated.addListener(handleTabChange);
-        chrome.tabs.onRemoved.addListener(handleTabChange);
-        chrome.tabs.onCreated.addListener(handleTabChange);
-        chrome.windows.onRemoved.addListener(handleTabChange);
-        chrome.windows.onCreated.addListener(handleTabChange);
-
-        return () => {
-            chrome.tabs.onUpdated.removeListener(handleTabChange);
-            chrome.tabs.onRemoved.removeListener(handleTabChange);
-            chrome.tabs.onCreated.removeListener(handleTabChange);
-            chrome.windows.onRemoved.removeListener(handleTabChange);
-            chrome.windows.onCreated.removeListener(handleTabChange);
-        };
-    }, []);
-
-    return (
-        <div id="windows-panel" className="w-full flex flex-col p-10 items-center overflow-y-auto no-scrollbar">
-            {windows.map((window, index) => (
-                <Window window={window} index={index + 1} />
-            ))}
-        </div>
-    );
-}
+  return (
+    <div
+      id='windows-panel'
+      className='no-scrollbar flex w-full flex-col items-center overflow-y-auto p-10'
+    >
+      {error && <p role='alert'>{error}</p>}
+      {windows.map((window, index) => (
+        <Window key={window.id} window={window} index={index + 1} />
+      ))}
+    </div>
+  );
+};
 
 export default Windows;

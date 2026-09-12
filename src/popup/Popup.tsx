@@ -1,19 +1,19 @@
-import React, { JSX } from 'react';
+import React from 'react';
 
-export default function Popup(): JSX.Element {
+export default function Popup() {
   return (
-    <div id='my-ext' className='container' data-theme='light'>
-      <button type='button' className='btn btn-outline'>
-        Default
-      </button>
-      <button type='button' className='btn btn-outline btn-primary'>
-        Primary
-      </button>
-      <button type='button' className='btn btn-outline btn-secondary'>
-        Secondary
-      </button>
-      <button type='button' className='btn btn-outline btn-accent'>
-        Accent
+    <div className='w-220 p-16' data-theme='light'>
+      <h1 className='mb-12 text-[18px]'>Toby Next</h1>
+      <button
+        type='button'
+        className='bg-toby-blue cursor-pointer rounded-md px-12 py-8 text-white'
+        onClick={() =>
+          chrome.tabs.create({
+            url: chrome.runtime.getURL('src/newtab/index.html'),
+          })
+        }
+      >
+        Open tab manager
       </button>
     </div>
   );

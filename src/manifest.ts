@@ -7,16 +7,12 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export default defineManifest({
   manifest_version: 3,
+  minimum_chrome_version: '134',
   name: `${packageData.displayName || packageData.name}${
     isDev ? ` ➡️ Dev` : ''
   }`,
   version: packageData.version,
   description: packageData.description,
-  background: {
-    service_worker: 'src/background/index.ts',
-    type: 'module',
-  },
-  options_page: 'src/options/index.html',
   action: {
     default_popup: 'src/popup/index.html',
     default_icon: {
@@ -32,10 +28,10 @@ export default defineManifest({
     48: 'icon48.png',
     128: 'icon128.png',
   },
-  permissions: ['tabs', 'storage', 'bookmarks'],
+  permissions: ['tabs', 'storage', 'bookmarks', 'favicon'],
   content_scripts: [],
   web_accessible_resources: [],
   chrome_url_overrides: {
-    newtab: 'src/newtab/index.html'
+    newtab: 'src/newtab/index.html',
   },
 });

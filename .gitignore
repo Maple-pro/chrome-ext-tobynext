@@ -1,30 +1,38 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies and package-manager caches
+node_modules/
+.pnpm-store/
 
-node_modules
-dist
-dist-ssr
+# Generated builds and extension packages
+/dist/
+/dist-ssr/
+/build/
+/release/
+*.tsbuildinfo
+*.crx
+*.pem
+*.key
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
+# Logs and test artifacts
+logs/
+*.log
+coverage/
+playwright-report/
+test-results/
+
+# Editors and operating systems
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# typescript build files
-build
-
-dist.pem
-
