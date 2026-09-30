@@ -63,7 +63,11 @@ export function useDragSource(item: DragItem, allowedControlSelector?: string) {
 export function useDropTarget(
   types: DragItem['type'][],
   parentId: string,
-  targetId?: string
+  targetId?: string,
+  destinationForItem?: (item: DragItem) => {
+    parentId: string;
+    targetId?: string;
+  }
 ) {
   const { dragType, setDragType, refresh } = useNewTabContext();
   const [position, setPosition] = useState<'' | 'before' | 'after' | 'inside'>(
@@ -112,15 +116,23 @@ export function useDropTarget(
         event.preventDefault();
         event.stopPropagation();
         const item = readDrag(event.dataTransfer);
+        const destination = item
+          ? (destinationForItem?.(item) ?? { parentId, targetId })
+          : undefined;
         const rect = event.currentTarget.getBoundingClientRect();
         const after = event.clientY > rect.top + rect.height / 2;
         endDrag();
         setDragType('');
         setPosition('');
         setError('');
-        if (!item) return;
+        if (!item || !destination) return;
         try {
-          await dropItem(item, parentId, targetId, after);
+          await dropItem(
+            item,
+            destination.parentId,
+            destination.targetId,
+            after
+          );
           refresh();
         } catch (reason) {
           setError(String(reason));

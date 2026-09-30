@@ -16,7 +16,11 @@ export default function SpaceRow({ space }: { space: BookmarkTreeNode }) {
   const { targetProps, dropClass, error } = useDropTarget(
     ['space', 'collection'],
     dragType === 'collection' ? space.id : space.parentId!,
-    dragType === 'collection' ? undefined : space.id
+    dragType === 'collection' ? undefined : space.id,
+    (item) =>
+      item.type === 'collection'
+        ? { parentId: space.id }
+        : { parentId: space.parentId!, targetId: space.id }
   );
   const selected = currentSpace?.id === space.id;
   return (

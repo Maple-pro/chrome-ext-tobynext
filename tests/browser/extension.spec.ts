@@ -200,3 +200,42 @@ test('spaces reorder through the shared drag interaction', async () => {
     )
     .toEqual([ids.second, ids.first]);
 });
+
+test('dragging a collection into another space keeps it under that space', async () => {
+  const ids = await page.evaluate(async () => {
+    const stored = await chrome.storage.local.get([
+      'currentWorkspace',
+      'currentSpace',
+    ]);
+    const destination = await chrome.bookmarks.create({
+      parentId: stored.currentWorkspace,
+      title: 'Collection destination',
+    });
+    return {
+      destination: destination.id,
+      workspace: stored.currentWorkspace as string,
+    };
+  });
+  const target = page.locator(`[data-space-id="${ids.destination}"]`);
+  await expect(target).toBeVisible();
+  await page.locator(`[data-collection-id="${collectionId}"]`).dragTo(target, {
+    sourcePosition: { x: 8, y: 20 },
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        async (id) => (await chrome.bookmarks.get(id))[0].parentId,
+        collectionId
+      )
+    )
+    .toBe(ids.destination);
+  expect(
+    await page.evaluate(
+      async ({ workspace, collection }) =>
+        (await chrome.bookmarks.getChildren(workspace)).some(
+          (node) => node.id === collection
+        ),
+      { workspace: ids.workspace, collection: collectionId }
+    )
+  ).toBe(false);
+});
