@@ -229,25 +229,14 @@ TEST_CHROME_EXECUTABLE=/absolute/path/to/chrome pnpm test:e2e
 
 ### 构建和打包
 
-先停止 `pnpm dev`，在根目录执行以下命令。使用子 Shell 中的 `set -eu`，任一步失败时停止打包；ZIP 文件名自动包含版本号。
+先停止 `pnpm dev`，在根目录执行以下命令。脚本会运行单元测试、生产构建，并生成带版本号的 ZIP；任一步失败都会停止打包。
 
 ```bash
-(
-  set -eu
-  pnpm install --frozen-lockfile
-  pnpm test
-  pnpm build
-
-  release_version=$(node -p "require('./package.json').version")
-  mkdir -p release
-  (
-    cd dist
-    zip -r -FS "../release/tobynext-${release_version}.zip" .
-  )
-)
+pnpm install --frozen-lockfile
+pnpm release
 ```
 
-`zip -FS` 会同步已有同名 ZIP 的文件集合，移除已不在构建目录中的旧文件，避免重新打包时混入旧产物。打包后执行 `pnpm test:e2e`，并在 `chrome://extensions` 重新加载生产版 `dist/` 做手动验证。
+脚本使用 `zip -FS` 同步已有同名 ZIP 的文件集合，移除已不在构建目录中的旧文件，并检查 ZIP 完整性与根目录的 manifest。打包后执行 `pnpm test:e2e`，并在 `chrome://extensions` 重新加载生产版 `dist/` 做手动验证。
 
 生成的上传包位于 `release/tobynext-<版本号>.zip`。它的根目录应直接包含 manifest：
 
