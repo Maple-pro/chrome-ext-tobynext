@@ -64,14 +64,16 @@ test('saving a tab copies its current URL and does not close it', async () => {
     { parentId: 'p', title: 'Live title', url: 'https://example.org' },
   ]);
 });
-test('moving a space to a different workspace via sorting is rejected', async () => {
+test('a space can move directly to another workspace', async () => {
+  const moves = [];
   globalThis.chrome = {
     bookmarks: {
       get: async () => [{ id: 'a', parentId: 'old' }],
-      move: () => assert.fail('must not move'),
+      move: async (...args) => moves.push(args),
     },
   };
   await dropItem({ type: 'space', id: 'a' }, 'other');
+  assert.deepEqual(moves, [['a', { parentId: 'other', index: 0 }]]);
 });
 
 test('collections can be reordered within their current space', async () => {
@@ -100,4 +102,51 @@ test('collections can move directly into another space', async () => {
   assert.deepEqual(moves, [
     ['collection', { parentId: 'new-space', index: 0 }],
   ]);
+});
+
+test('sorting a workspace uses the shared sibling index', async () => {
+  const moves = [];
+  globalThis.chrome = {
+    bookmarks: {
+      get: async (id) => [
+        { id, parentId: 'root', index: id === 'first' ? 0 : 1 },
+      ],
+      move: async (...args) => moves.push(args),
+    },
+  };
+  await dropItem({ type: 'workspace', id: 'second' }, 'root', 'first');
+  assert.deepEqual(moves, [['second', { parentId: 'root', index: 0 }]]);
+});
+
+test('sorting cannot move an item between parents', async () => {
+  globalThis.chrome = {
+    bookmarks: {
+      get: async (id) => [
+        { id, parentId: id === 'source' ? 'old' : 'new', index: 0 },
+      ],
+      move: () => assert.fail('must not move'),
+    },
+  };
+  await assert.rejects(
+    dropItem({ type: 'collection', id: 'source' }, 'new', 'target'),
+    /same parent/
+  );
+});
+
+test('bookmarks can move across collections at a chosen sibling position', async () => {
+  const moves = [];
+  globalThis.chrome = {
+    bookmarks: {
+      get: async (id) => [
+        {
+          id,
+          parentId: id === 'source' ? 'old' : 'new',
+          index: id === 'target' ? 2 : 0,
+        },
+      ],
+      move: async (...args) => moves.push(args),
+    },
+  };
+  await dropItem({ type: 'bookmark', id: 'source' }, 'new', 'target', false);
+  assert.deepEqual(moves, [['source', { parentId: 'new', index: 2 }]]);
 });

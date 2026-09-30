@@ -239,3 +239,157 @@ test('dragging a collection into another space keeps it under that space', async
     )
   ).toBe(false);
 });
+
+test('collections reorder as siblings and never nest inside each other', async () => {
+  const ids = await page.evaluate(async () => {
+    const { currentSpace } = await chrome.storage.local.get('currentSpace');
+    const first = await chrome.bookmarks.create({
+      parentId: currentSpace,
+      title: 'First sortable',
+    });
+    const second = await chrome.bookmarks.create({
+      parentId: currentSpace,
+      title: 'Second sortable',
+    });
+    return {
+      first: first.id,
+      second: second.id,
+      space: currentSpace as string,
+    };
+  });
+  await expect(
+    page.locator(`[data-collection-id="${ids.second}"]`)
+  ).toBeVisible();
+  await page
+    .locator(`[data-collection-id="${ids.second}"]`)
+    .dragTo(page.locator(`[data-collection-id="${ids.first}"]`), {
+      sourcePosition: { x: 8, y: 20 },
+      targetPosition: { x: 8, y: 2 },
+    });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        async (space) =>
+          (await chrome.bookmarks.getChildren(space)).map((node) => node.id),
+        ids.space
+      )
+    )
+    .toEqual(expect.arrayContaining([ids.second, ids.first]));
+  expect(
+    await page.evaluate(async ({ first, second, space }) => {
+      const [a] = await chrome.bookmarks.get(first);
+      const [b] = await chrome.bookmarks.get(second);
+      return [a.parentId, b.parentId];
+    }, ids)
+  ).toEqual([ids.space, ids.space]);
+  const order = await page.evaluate(
+    async (space) =>
+      (await chrome.bookmarks.getChildren(space)).map((node) => node.id),
+    ids.space
+  );
+  expect(order.indexOf(ids.second)).toBeLessThan(order.indexOf(ids.first));
+});
+
+test('spaces can move into a workspace and workspaces can reorder', async () => {
+  const ids = await page.evaluate(async () => {
+    const { rootFolderId, currentWorkspace, currentSpace } =
+      await chrome.storage.local.get([
+        'rootFolderId',
+        'currentWorkspace',
+        'currentSpace',
+      ]);
+    const destination = await chrome.bookmarks.create({
+      parentId: rootFolderId,
+      title: 'Destination workspace',
+    });
+    const movable = await chrome.bookmarks.create({
+      parentId: currentWorkspace,
+      title: 'Movable space',
+    });
+    return {
+      root: rootFolderId as string,
+      current: currentWorkspace as string,
+      destination: destination.id,
+      movable: movable.id,
+      selectedSpace: currentSpace as string,
+    };
+  });
+  const destination = page.locator(`[data-workspace-id="${ids.destination}"]`);
+  await expect(destination).toBeVisible();
+  await page.locator(`[data-space-id="${ids.movable}"]`).dragTo(destination);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        async (id) => (await chrome.bookmarks.get(id))[0].parentId,
+        ids.movable
+      )
+    )
+    .toBe(ids.destination);
+  await destination.dragTo(
+    page.locator(`[data-workspace-id="${ids.current}"]`),
+    {
+      targetPosition: { x: 8, y: 2 },
+    }
+  );
+  await expect
+    .poll(() =>
+      page.evaluate(
+        async (root) =>
+          (await chrome.bookmarks.getChildren(root)).map((node) => node.id),
+        ids.root
+      )
+    )
+    .toEqual([ids.destination, ids.current]);
+  expect(
+    await page.evaluate(
+      async (id) => (await chrome.bookmarks.get(id))[0].parentId,
+      ids.selectedSpace
+    )
+  ).toBe(ids.current);
+});
+
+test('bookmarks can be inserted next to a bookmark in another collection', async () => {
+  const ids = await page.evaluate(async () => {
+    const { currentSpace } = await chrome.storage.local.get('currentSpace');
+    const sourceCollection = await chrome.bookmarks.create({
+      parentId: currentSpace,
+      title: 'Source collection',
+    });
+    const targetCollection = await chrome.bookmarks.create({
+      parentId: currentSpace,
+      title: 'Target collection',
+    });
+    const source = await chrome.bookmarks.create({
+      parentId: sourceCollection.id,
+      title: 'Source bookmark',
+      url: 'https://example.com/source',
+    });
+    const target = await chrome.bookmarks.create({
+      parentId: targetCollection.id,
+      title: 'Target bookmark',
+      url: 'https://example.com/target',
+    });
+    return {
+      source: source.id,
+      target: target.id,
+      collection: targetCollection.id,
+    };
+  });
+  const source = page.locator(`[data-bookmark-id="${ids.source}"]`);
+  const target = page.locator(`[data-bookmark-id="${ids.target}"]`);
+  await expect(source).toBeVisible();
+  await expect(target).toBeVisible();
+  await source.dragTo(target, {
+    sourcePosition: { x: 8, y: 16 },
+    targetPosition: { x: 100, y: 16 },
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        async (id) =>
+          (await chrome.bookmarks.getChildren(id)).map((node) => node.id),
+        ids.collection
+      )
+    )
+    .toEqual([ids.source, ids.target]);
+});

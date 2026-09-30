@@ -22,8 +22,7 @@ const Bookmark = (props: BookmarkProps): JSX.Element => {
   });
   const { dropClass, targetProps, error } = useDropTarget(
     ['bookmark', 'tab'],
-    props.bookmark.parentId!,
-    props.bookmark.id
+    () => ({ parentId: props.bookmark.parentId!, targetId: props.bookmark.id })
   );
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [faviconIndex, setFaviconIndex] = useState(0);

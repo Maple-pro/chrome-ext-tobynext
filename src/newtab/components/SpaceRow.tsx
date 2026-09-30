@@ -8,15 +8,13 @@ import { useDragSource, useDropTarget } from '../hooks/useDrag';
 import { canClick } from '../services/drag';
 
 export default function SpaceRow({ space }: { space: BookmarkTreeNode }) {
-  const { currentSpace, setCurrentSpace, dragType } = useNewTabContext();
+  const { currentSpace, setCurrentSpace } = useNewTabContext();
   const { sourceProps, dragging } = useDragSource({
     type: 'space',
     id: space.id,
   });
   const { targetProps, dropClass, error } = useDropTarget(
     ['space', 'collection'],
-    dragType === 'collection' ? space.id : space.parentId!,
-    dragType === 'collection' ? undefined : space.id,
     (item) =>
       item.type === 'collection'
         ? { parentId: space.id }

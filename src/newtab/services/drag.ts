@@ -1,7 +1,7 @@
 import type { BookmarkTreeNode } from '@/types';
 
 export type DragItem =
-  | { type: 'bookmark' | 'space' | 'collection'; id: string }
+  | { type: 'bookmark' | 'space' | 'collection' | 'workspace'; id: string }
   | { type: 'tab'; id: number };
 export const DRAG_MIME = 'application/x-tobynext-item';
 let active: DragItem | undefined;
@@ -18,6 +18,9 @@ export function endDrag() {
 }
 export function canClick() {
   return !active && Date.now() > suppressClickUntil;
+}
+export function activeDrag() {
+  return active;
 }
 export function acceptsDrag(types: DragItem['type'][]) {
   return active !== undefined && types.includes(active.type);
@@ -60,10 +63,14 @@ export async function dropItem(
     });
   } else {
     const [source] = await chrome.bookmarks.get(item.id);
-    if (item.type === 'space' && source.parentId !== parentId) return;
+    if (target && source.parentId !== parentId && item.type !== 'bookmark')
+      throw new Error('Items can only be sorted within the same parent.');
     const moveOptions = target
       ? { parentId, index: insertionIndex(target, after) }
-      : { parentId, ...(item.type === 'collection' ? { index: 0 } : {}) };
+      : {
+          parentId,
+          ...(['space', 'collection'].includes(item.type) ? { index: 0 } : {}),
+        };
     await chrome.bookmarks.move(source.id, {
       ...moveOptions,
     });

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNewTabContext } from '../context/NewTabContext';
 import {
   acceptsDrag,
+  activeDrag,
   beginDrag,
   DragItem,
   dropItem,
@@ -18,14 +19,20 @@ export function useDragSource(item: DragItem, allowedControlSelector?: string) {
   }, [dragType, item.type]);
   useEffect(() => {
     if (!dragging) return;
-    const resetDragging = () => {
+    const resetDragging = (event: DragEvent) => {
+      if (event.type === 'drop' && activeDrag()) event.preventDefault();
       setDragging(false);
       setDragType('');
       (document.activeElement as HTMLElement | null)?.blur();
     };
+    const preventNativeDragOver = (event: DragEvent) => {
+      if (activeDrag()) event.preventDefault();
+    };
+    window.addEventListener('dragover', preventNativeDragOver, true);
     window.addEventListener('dragend', resetDragging, true);
     window.addEventListener('drop', resetDragging, true);
     return () => {
+      window.removeEventListener('dragover', preventNativeDragOver, true);
       window.removeEventListener('dragend', resetDragging, true);
       window.removeEventListener('drop', resetDragging, true);
     };
@@ -60,14 +67,11 @@ export function useDragSource(item: DragItem, allowedControlSelector?: string) {
   };
 }
 
+export type DropDestination = { parentId: string; targetId?: string };
+
 export function useDropTarget(
   types: DragItem['type'][],
-  parentId: string,
-  targetId?: string,
-  destinationForItem?: (item: DragItem) => {
-    parentId: string;
-    targetId?: string;
-  }
+  destinationForItem: (item: DragItem) => DropDestination | undefined
 ) {
   const { dragType, setDragType, refresh } = useNewTabContext();
   const [position, setPosition] = useState<'' | 'before' | 'after' | 'inside'>(
@@ -82,19 +86,21 @@ export function useDropTarget(
     error,
     targetProps: {
       onDragOver(event: React.DragEvent<HTMLElement>) {
-        if (!acceptsDrag(types)) return;
+        const item = activeDrag();
+        if (!item || !acceptsDrag(types)) return;
+        const destination = destinationForItem(item);
+        if (!destination || destination.targetId === item.id) return;
         event.preventDefault();
         event.stopPropagation();
-        event.dataTransfer.dropEffect = dragType === 'tab' ? 'copy' : 'move';
+        event.dataTransfer.dropEffect = item.type === 'tab' ? 'copy' : 'move';
         const rect = event.currentTarget.getBoundingClientRect();
         setPosition(
-          targetId
+          destination.targetId
             ? event.clientY > rect.top + rect.height / 2
               ? 'after'
               : 'before'
             : 'inside'
         );
-        // Keep long collection/space panels moving near the visible edges.
         let panel: HTMLElement | null = event.currentTarget;
         while (
           panel &&
@@ -112,20 +118,18 @@ export function useDropTarget(
           setPosition('');
       },
       async onDrop(event: React.DragEvent<HTMLElement>) {
-        if (!acceptsDrag(types)) return;
+        const item = readDrag(event.dataTransfer);
+        if (!item || !types.includes(item.type)) return;
+        const destination = destinationForItem(item);
+        if (!destination || destination.targetId === item.id) return;
         event.preventDefault();
         event.stopPropagation();
-        const item = readDrag(event.dataTransfer);
-        const destination = item
-          ? (destinationForItem?.(item) ?? { parentId, targetId })
-          : undefined;
         const rect = event.currentTarget.getBoundingClientRect();
         const after = event.clientY > rect.top + rect.height / 2;
         endDrag();
         setDragType('');
         setPosition('');
         setError('');
-        if (!item || !destination) return;
         try {
           await dropItem(
             item,

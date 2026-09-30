@@ -16,7 +16,7 @@ interface CollectionProps {
 }
 
 const Collection = (props: CollectionProps): JSX.Element => {
-  const { refresh, currentSpace, dragType } = useNewTabContext();
+  const { refresh } = useNewTabContext();
 
   const [bookmarks, setBookmarks] = useState<BookmarkTreeNode[]>([]);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -24,10 +24,13 @@ const Collection = (props: CollectionProps): JSX.Element => {
   const [newTitle, setNewTitle] = useState(props.collection.title);
   const { targetProps, dropClass, error } = useDropTarget(
     ['bookmark', 'tab', 'collection'],
-    dragType === 'collection'
-      ? currentSpace?.id || props.collection.parentId || props.collection.id
-      : props.collection.id,
-    dragType === 'collection' ? props.collection.id : undefined
+    (item) =>
+      item.type === 'collection'
+        ? {
+            parentId: props.collection.parentId!,
+            targetId: props.collection.id,
+          }
+        : { parentId: props.collection.id }
   );
   const { sourceProps, dragging } = useDragSource({
     type: 'collection',
